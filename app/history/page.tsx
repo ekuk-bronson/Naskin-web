@@ -21,7 +21,7 @@ export default async function HistoryPage() {
         <p className="text-[9px] tracking-[0.22em] uppercase text-stone font-semibold mb-1">
           Динамика наблюдений
         </p>
-        <h1 className="text-[26px] font-extrabold tracking-tight text-dark">История</h1>
+        <h1 className="font-display text-[30px] font-bold tracking-tight text-dark">История</h1>
       </div>
 
       {moles.length === 0 ? (
@@ -40,7 +40,7 @@ export default async function HistoryPage() {
             <Link
               key={m.id}
               href={`/moles/${m.id}`}
-              className="block bg-white border border-line rounded-2xl p-4 shadow-[0_2px_12px_rgba(28,26,24,0.04)] hover:shadow-[0_6px_20px_rgba(28,26,24,0.08)] transition"
+              className="card-lift block bg-white border border-line rounded-2xl p-4 shadow-[0_2px_12px_rgba(28,26,24,0.04)]"
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="min-w-0">

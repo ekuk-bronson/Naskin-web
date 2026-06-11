@@ -30,7 +30,7 @@ export default async function ProfilePage() {
         <p className="text-[9px] tracking-[0.22em] uppercase text-stone font-semibold mb-1">
           Аккаунт
         </p>
-        <h1 className="text-[26px] font-extrabold tracking-tight text-dark">Профиль</h1>
+        <h1 className="font-display text-[30px] font-bold tracking-tight text-dark">Профиль</h1>
       </div>
 
       {/* Карточка пользователя */}
@@ -67,7 +67,7 @@ export default async function ProfilePage() {
             key={st.label}
             className="bg-white border border-line rounded-2xl p-4 shadow-[0_2px_8px_rgba(28,26,24,0.03)]"
           >
-            <p className="text-[28px] font-extrabold tracking-tight leading-8" style={{ color: st.color }}>
+            <p className="font-display text-[30px] font-bold tracking-tight leading-9" style={{ color: st.color }}>
               {st.value}
             </p>
             <p className="text-[10px] tracking-[0.14em] uppercase text-faint font-semibold mt-1">

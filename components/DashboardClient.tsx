@@ -46,7 +46,7 @@ export default function DashboardClient({ moles: initial }: { moles: MoleDto[] }
           <p className="text-[9px] tracking-[0.22em] uppercase text-stone font-semibold mb-1">
             {monthLabel}
           </p>
-          <h1 className="text-[26px] font-extrabold tracking-tight text-dark">Мои родинки</h1>
+          <h1 className="font-display text-[30px] font-bold tracking-tight text-dark">Мои родинки</h1>
         </div>
       </div>
 

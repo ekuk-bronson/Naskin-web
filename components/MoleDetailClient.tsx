@@ -169,7 +169,7 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
           </span>
           <div className="flex-1 min-w-0">
             <p
-              className="text-2xl font-extrabold tracking-tight leading-7 mb-1.5"
+              className="font-display text-[26px] font-bold tracking-tight leading-8 mb-1.5"
               style={{ color: cfg.color }}
             >
               {cfg.label}

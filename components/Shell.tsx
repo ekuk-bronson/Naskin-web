@@ -15,13 +15,13 @@ export default function Shell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex-1 flex flex-col">
-      <header className="sticky top-0 z-20 bg-bg/90 backdrop-blur border-b border-line">
+      <header className="sticky top-0 z-20 glass border-b border-line/70">
         <div className="max-w-2xl mx-auto px-5 h-14 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <span className="w-7 h-7 rounded-full bg-line border border-faint/40 flex items-center justify-center">
+            <span className="w-7 h-7 rounded-full bg-line border border-faint/40 flex items-center justify-center shadow-[0_3px_10px_rgba(139,115,85,0.2)]">
               <span className="w-3 h-2.5 rounded-full bg-[#7A5035]" />
             </span>
-            <span className="text-sm font-extrabold tracking-tight text-dark">FreeSkin</span>
+            <span className="font-display text-[15px] font-bold tracking-tight text-dark">FreeSkin</span>
           </Link>
           <nav className="flex items-center gap-1">
             {NAV.map((item) => {

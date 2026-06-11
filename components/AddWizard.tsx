@@ -192,7 +192,7 @@ export default function AddWizard({
       {step === 1 && (
         <>
           <div className="flex-1 px-6 pt-7 pb-32">
-            <h1 className="text-[28px] font-extrabold tracking-tight text-dark mb-6">
+            <h1 className="font-display text-[32px] font-bold tracking-tight text-dark mb-6">
               Как назовём родинку?
             </h1>
             <p className="text-[10px] font-bold tracking-[0.22em] uppercase text-faint mb-2.5">
@@ -249,7 +249,7 @@ export default function AddWizard({
       {step === 2 && (
         <>
           <div className="flex-1 px-6 pt-7 pb-32">
-            <h1 className="text-[28px] font-extrabold tracking-tight text-dark mb-6">
+            <h1 className="font-display text-[32px] font-bold tracking-tight text-dark mb-6">
               Сфотографируйте родинку
             </h1>
 
@@ -377,7 +377,7 @@ export default function AddWizard({
       {step === 3 && (
         <div className="flex-1 flex flex-col items-center justify-center px-6 min-h-[60vh]">
           <span className="w-[120px] h-[120px] rounded-full bg-line shadow-[0_4px_20px_rgba(139,115,85,0.15)] mb-7 animate-orb" />
-          <p className="text-xl font-bold tracking-tight text-dark mb-2">Анализируем…</p>
+          <p className="font-display text-2xl font-bold tracking-tight text-dark mb-2">Анализируем…</p>
           <p className="text-xs text-faint">Оцениваем признаки по шкале ABCDE</p>
           <span className="w-[72%] max-w-xs h-[3px] bg-line rounded-full mt-8 overflow-hidden">
             <span className="block h-full bg-stone rounded-full animate-progress" />

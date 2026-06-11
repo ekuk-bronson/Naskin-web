@@ -16,7 +16,7 @@ export default function MoleCard({
   const cfg = RISK_LEVELS[mole.risk];
 
   return (
-    <div className="group relative bg-white border border-line rounded-2xl px-4 py-3.5 flex items-center gap-3.5 shadow-[0_3px_12px_rgba(28,26,24,0.04)] hover:shadow-[0_6px_20px_rgba(28,26,24,0.08)] transition">
+    <div className="group card-lift relative bg-white border border-line rounded-2xl px-4 py-3.5 flex items-center gap-3.5 shadow-[0_3px_12px_rgba(28,26,24,0.04)]">
       <Link href={`/moles/${mole.id}`} className="absolute inset-0 rounded-2xl" aria-label={mole.name} />
 
       {mole.imageUrl ? (
