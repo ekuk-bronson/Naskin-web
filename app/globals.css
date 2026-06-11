@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+/* FreeSkin — тёплая мраморная палитра (НЕ отклоняться, см. CLAUDE.md) */
+:root {
+  --bg: #F8F6F3;
+  --dark: #1C1A18;
+  --stone: #8B7355;
+  --dim: #9A9087;
+  --faint: #C5BDB4;
+  --border: #EDE9E3;
+
+  --risk-high: #E8003D;
+  --risk-moderate: #E06000;
+  --risk-low: #00904A;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-dark: var(--dark);
+  --color-stone: var(--stone);
+  --color-dim: var(--dim);
+  --color-faint: var(--faint);
+  --color-line: var(--border);
+  --color-risk-high: var(--risk-high);
+  --color-risk-moderate: var(--risk-moderate);
+  --color-risk-low: var(--risk-low);
+  --font-sans: var(--font-geist-sans);
+}
+
+body {
+  background: var(--bg);
+  color: var(--dark);
+  font-family: var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Пульсирующий орб на шаге анализа */
+@keyframes orb-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+.animate-orb {
+  animation: orb-pulse 1.8s ease-in-out infinite;
+}
+
+/* Заполнение прогресс-бара анализа */
+@keyframes progress-fill {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+.animate-progress {
+  animation: progress-fill 2.2s ease-out forwards;
+}
+
+/* Пульс красной точки alert-баннера */
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.animate-dot {
+  animation: dot-pulse 1.4s ease-in-out infinite;
+}
+
+/* Тонкий скроллбар для горизонтальных лент */
+.thin-scroll::-webkit-scrollbar { height: 4px; }
+.thin-scroll::-webkit-scrollbar-thumb { background: var(--faint); border-radius: 99px; }
+.thin-scroll::-webkit-scrollbar-track { background: transparent; }

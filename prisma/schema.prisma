@@ -1,0 +1,44 @@
+// FreeSkin web — Prisma schema.
+// Dev uses SQLite (zero setup, mirrors the mobile app). To switch to
+// PostgreSQL/Supabase change provider to "postgresql" and set DATABASE_URL.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Mole {
+  id          Int      @id @default(autoincrement())
+  userId      String
+  name        String
+  loc         String
+  score       Float
+  risk        String // low | notable | moderate | high | urgent
+  days        Int      @default(0)
+  changed     Boolean  @default(false)
+  size        String
+  since       String
+  imageUrl    String?
+  abcdeJson   String // JSON: {asymmetry,border,color,diameter,evolution} each {s,n}
+  historyJson String // JSON: [{m,s}]
+  summary     String?
+  rec         String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model User {
+  id        String  @id // Google sub
+  email     String
+  name      String
+  avatarUrl String?
+  moles     Mole[]
+}
