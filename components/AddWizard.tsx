@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDropzone } from 'react-dropzone';
-import { BODY_LOCATIONS } from '@/lib/riskLevels';
 import { checkPhotoQuality, fileToDataUrl, type QualityResult } from '@/lib/clientImage';
+import { LOCATION_KEYS, type DictKey } from '@/lib/i18n';
+import { useLocale } from '@/lib/i18n-client';
 import type { AnalysisResult } from '@/lib/mockAnalyzer';
 
 type Step = 1 | 2 | 3;
@@ -33,6 +34,7 @@ export default function AddWizard({
   defaultName: string;
 }) {
   const router = useRouter();
+  const { t } = useLocale();
   const isRescan = rescanMoleId !== null;
 
   const [step, setStep] = useState<Step>(isRescan ? 2 : 1);
@@ -55,9 +57,10 @@ export default function AddWizard({
       const dataUrl = await fileToDataUrl(file);
       setImageUrl(dataUrl);
     } catch {
-      setError('Не удалось обработать фото. Попробуйте другой файл.');
+      setError(t('wizard.errPhoto'));
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [t]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: { 'image/*': [] },
@@ -141,7 +144,7 @@ export default function AddWizard({
         router.replace(`/moles/${moleId}`);
       } catch {
         analysisStarted.current = false;
-        setError('Не удалось выполнить анализ. Попробуйте ещё раз.');
+        setError(t('wizard.errAnalyze'));
         setStep(2);
       }
     })();
@@ -154,12 +157,12 @@ export default function AddWizard({
 
   const title =
     step === 3
-      ? 'Анализ'
+      ? t('wizard.titleAnalysis')
       : isRescan
-        ? `Повторный скан · ${rescanMoleName ?? ''}`
+        ? `${t('wizard.rescan')} · ${rescanMoleName ?? ''}`
         : step === 1
-          ? 'Новая родинка'
-          : 'Фотография';
+          ? t('wizard.titleNew')
+          : t('wizard.titlePhoto');
 
   return (
     <div className="flex-1 flex flex-col max-w-2xl w-full mx-auto">
@@ -189,10 +192,10 @@ export default function AddWizard({
         <>
           <div className="flex-1 px-5 pt-7 pb-32">
             <h1 className="font-display text-[26px] font-extrabold uppercase tracking-tight mb-7">
-              Как назовём родинку?
+              {t('wizard.nameQ')}
             </h1>
             <p className="font-label text-[9px] font-bold tracking-[0.25em] uppercase text-grey mb-2.5">
-              Название
+              {t('wizard.lblName')}
             </p>
             <input
               value={name}
@@ -202,14 +205,15 @@ export default function AddWizard({
               className="w-full border-2 border-ink bg-white px-4 py-3.5 text-[15px] font-medium placeholder:text-mist outline-none focus:bg-paper transition-colors"
             />
             <p className="font-label text-[9px] font-bold tracking-[0.25em] uppercase text-grey mt-7 mb-2.5">
-              Расположение
+              {t('wizard.lblLoc')}
             </p>
             <div className="flex flex-wrap gap-2">
-              {BODY_LOCATIONS.map((l) => {
+              {LOCATION_KEYS.map((key) => {
+                const l = t(key);
                 const on = loc === l;
                 return (
                   <button
-                    key={l}
+                    key={key}
                     type="button"
                     onClick={() => setLoc(l)}
                     className={`border-2 border-ink px-3.5 py-2 font-label text-[11px] font-bold uppercase tracking-wider transition-colors ${
@@ -230,7 +234,7 @@ export default function AddWizard({
                 disabled={!loc}
                 className="hard-sm hard-hover hard-press w-full py-3.5 bg-accent text-white font-label text-[12px] font-bold uppercase tracking-wider disabled:opacity-30 disabled:pointer-events-none"
               >
-                {loc ? 'Далее →' : 'Выберите расположение'}
+                {loc ? t('wizard.next') : t('wizard.chooseLoc')}
               </button>
             </div>
           </div>
@@ -242,7 +246,7 @@ export default function AddWizard({
         <>
           <div className="flex-1 px-5 pt-7 pb-32">
             <h1 className="font-display text-[26px] font-extrabold uppercase tracking-tight mb-7">
-              Сфотографируйте родинку
+              {t('wizard.photoQ')}
             </h1>
 
             {imageUrl ? (
@@ -250,7 +254,7 @@ export default function AddWizard({
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={imageUrl}
-                  alt="Предпросмотр"
+                  alt=""
                   className="w-full max-w-md aspect-square object-cover border-2 border-ink"
                 />
                 <button
@@ -258,7 +262,7 @@ export default function AddWizard({
                   onClick={() => setImageUrl(null)}
                   className="mt-3 font-label text-[11px] font-bold uppercase tracking-wider text-accent hover:underline"
                 >
-                  Переснять
+                  {t('wizard.retake')}
                 </button>
               </div>
             ) : (
@@ -271,9 +275,9 @@ export default function AddWizard({
                 <input {...getInputProps()} />
                 <span className="font-display text-3xl mb-3">⌖</span>
                 <p className="font-label text-[10px] uppercase tracking-wider text-grey text-center leading-relaxed px-8">
-                  Перетащите фото сюда
+                  {t('wizard.dropHint1')}
                   <br />
-                  или используйте кнопки ниже
+                  {t('wizard.dropHint2')}
                 </p>
               </div>
             )}
@@ -283,30 +287,32 @@ export default function AddWizard({
               <div className="border-2 border-ink bg-white px-4 py-3 mb-4 flex items-center gap-3">
                 <span className="w-2 h-2 bg-ink animate-blink" />
                 <p className="font-label text-[10px] font-bold uppercase tracking-wider text-grey">
-                  Проверяем качество снимка…
+                  {t('wizard.checking')}
                 </p>
               </div>
             )}
             {imageUrl && !qualityLoading && quality && !quality.ok && !qualityIgnored && (
               <div className="border-2 border-risk-moderate bg-white px-4 py-3.5 mb-4">
                 <p className="font-label text-[10px] font-bold uppercase tracking-wider text-risk-moderate mb-1">
-                  Проблема со снимком
+                  {t('wizard.problem')}
                 </p>
-                <p className="text-[13px] leading-snug mb-2.5">{quality.reason}</p>
+                <p className="text-[13px] leading-snug mb-2.5">
+                  {quality.reason ? t(`wizard.q${quality.reason[0].toUpperCase()}${quality.reason.slice(1)}` as DictKey) : ''}
+                </p>
                 <div className="flex items-center gap-4">
                   <button
                     type="button"
                     onClick={() => setImageUrl(null)}
                     className="font-label text-[10px] font-bold uppercase tracking-wider text-accent hover:underline"
                   >
-                    Переснять
+                    {t('wizard.retake')}
                   </button>
                   <button
                     type="button"
                     onClick={() => setQualityIgnored(true)}
                     className="font-label text-[10px] uppercase tracking-wider text-grey hover:underline"
                   >
-                    Всё равно продолжить
+                    {t('wizard.anyway')}
                   </button>
                 </div>
               </div>
@@ -315,7 +321,7 @@ export default function AddWizard({
               <div className="border-2 border-risk-low bg-white px-4 py-3 mb-4 flex items-center gap-3">
                 <span className="w-2 h-2 bg-risk-low" />
                 <p className="font-label text-[10px] font-bold uppercase tracking-wider text-risk-low">
-                  Качество снимка подходит для анализа
+                  {t('wizard.qualityOk')}
                 </p>
               </div>
             )}
@@ -341,14 +347,14 @@ export default function AddWizard({
                 onClick={() => cameraInput.current?.click()}
                 className="hard-sm hard-hover hard-press py-3.5 bg-ink text-paper font-label text-[11px] font-bold uppercase tracking-wider"
               >
-                Сделать фото
+                {t('wizard.take')}
               </button>
               <button
                 type="button"
                 onClick={() => galleryInput.current?.click()}
                 className="hard-sm hard-hover hard-press py-3.5 bg-white font-label text-[11px] font-bold uppercase tracking-wider"
               >
-                Из галереи
+                {t('wizard.gallery')}
               </button>
             </div>
           </div>
@@ -360,7 +366,7 @@ export default function AddWizard({
                 disabled={!imageUrl || !qualityOk}
                 className="hard-sm hard-hover hard-press w-full py-3.5 bg-accent text-white font-label text-[12px] font-bold uppercase tracking-wider disabled:opacity-30 disabled:pointer-events-none"
               >
-                Продолжить →
+                {t('wizard.continue')}
               </button>
             </div>
           </div>
@@ -374,16 +380,16 @@ export default function AddWizard({
             <span className="w-9 h-9 rounded-full bg-paper" />
           </span>
           <p className="font-display text-2xl font-extrabold uppercase tracking-tight mb-2">
-            Анализируем<span className="animate-blink">_</span>
+            {t('wizard.analyzing')}<span className="animate-blink">_</span>
           </p>
           <p className="font-label text-[10px] uppercase tracking-[0.2em] text-grey">
-            Оцениваем признаки по шкале ABCDE
+            {t('wizard.abcdeHint')}
           </p>
           <div className="w-[72%] max-w-xs h-3 border-2 border-ink mt-8 overflow-hidden bg-white">
             <div className="stripes h-full" />
           </div>
           <span className="border-2 border-ink bg-white mt-7 px-3.5 py-1.5 font-label text-[10px] font-bold uppercase tracking-wider">
-            Демо-режим анализа
+            {t('wizard.demo')}
           </span>
         </div>
       )}

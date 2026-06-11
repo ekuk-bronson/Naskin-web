@@ -2,12 +2,15 @@ import { redirect } from 'next/navigation';
 import { auth, signOut } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { RISK_LEVELS } from '@/lib/riskLevels';
+import { getT } from '@/lib/i18n';
+import { getLocale } from '@/lib/locale-server';
 import Shell from '@/components/Shell';
 
 export default async function ProfilePage() {
   const session = await auth();
   if (!session?.user?.id) redirect('/login');
   const userId = session.user.id;
+  const t = getT(await getLocale());
 
   const dbUser = await prisma.user.findUnique({ where: { id: userId } });
   const moles = await prisma.mole.findMany({ where: { userId }, select: { risk: true, changed: true } });
@@ -18,19 +21,21 @@ export default async function ProfilePage() {
   const changed = moles.filter((m) => m.changed).length;
 
   const stats = [
-    { label: 'Всего', value: moles.length, color: 'var(--ink)' },
-    { label: 'Высокий риск', value: high, color: RISK_LEVELS.high.color },
-    { label: 'Умеренный', value: moderate, color: RISK_LEVELS.moderate.color },
-    { label: 'В норме', value: low, color: RISK_LEVELS.low.color },
+    { label: t('profile.total'), value: moles.length, color: 'var(--ink)' },
+    { label: t('profile.statHigh'), value: high, color: RISK_LEVELS.high.color },
+    { label: t('profile.statMod'), value: moderate, color: RISK_LEVELS.moderate.color },
+    { label: t('profile.statLow'), value: low, color: RISK_LEVELS.low.color },
   ];
 
   return (
     <Shell>
       <div className="mb-6">
         <p className="font-label text-[9px] tracking-[0.25em] text-accent font-bold mb-1.5 uppercase">
-          Аккаунт
+          {t('profile.sup')}
         </p>
-        <h1 className="font-display text-[26px] font-extrabold uppercase tracking-tight">Профиль</h1>
+        <h1 className="font-display text-[26px] font-extrabold uppercase tracking-tight">
+          {t('profile.title')}
+        </h1>
       </div>
 
       {/* Карточка пользователя */}
@@ -49,14 +54,14 @@ export default async function ProfilePage() {
         )}
         <div className="min-w-0">
           <p className="text-[15px] font-bold uppercase tracking-tight truncate">
-            {dbUser?.name ?? 'Пользователь'}
+            {dbUser?.name ?? t('common.user')}
           </p>
           <p className="font-label text-[10px] uppercase tracking-wider text-grey truncate">
             {dbUser?.email}
           </p>
           {userId === 'demo-user' && (
             <span className="inline-block mt-1.5 border-2 border-accent px-2 py-0.5 font-label text-[9px] font-bold uppercase tracking-wider text-accent">
-              Демо-режим
+              {t('profile.demoBadge')}
             </span>
           )}
         </div>
@@ -83,7 +88,7 @@ export default async function ProfilePage() {
       {moles.length > 0 && (
         <div className="hard-sm bg-white p-4 mb-5">
           <p className="font-label text-[9px] font-bold tracking-[0.22em] uppercase text-grey mb-3">
-            Распределение риска
+            {t('profile.dist')}
           </p>
           <div className="flex h-4 border-2 border-ink overflow-hidden">
             {high > 0 && (
@@ -98,7 +103,7 @@ export default async function ProfilePage() {
           </div>
           {changed > 0 && (
             <p className="font-label text-[10px] font-bold uppercase tracking-wider text-risk-moderate mt-3">
-              ! Изменились с последней проверки: {changed}
+              {t('profile.changedSince')} {changed}
             </p>
           )}
         </div>
@@ -116,14 +121,12 @@ export default async function ProfilePage() {
           className="hard-sm hard-hover hard-press w-full py-3.5 bg-white font-label text-[12px] font-bold uppercase tracking-wider text-risk-high"
           style={{ borderColor: 'var(--risk-high)', boxShadow: '3px 3px 0 var(--risk-high)' }}
         >
-          Выйти из аккаунта
+          {t('profile.signout')}
         </button>
       </form>
 
       <p className="font-label text-[9px] uppercase tracking-wider text-grey text-center mt-7 leading-relaxed pb-6">
-        Это не диагноз. FreeSkin не является медицинским устройством.
-        <br />
-        Обратитесь к врачу.
+        {t('common.disclaimer')}
       </p>
     </Shell>
   );

@@ -3,39 +3,42 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import type { MoleDto } from '@/lib/types';
+import { useLocale } from '@/lib/i18n-client';
+import type { DictKey } from '@/lib/i18n';
 import HeroCard from './HeroCard';
 import MoleCard from './MoleCard';
 
 type SortKey = 'date' | 'score' | 'name';
 const NEXT_SORT: Record<SortKey, SortKey> = { date: 'score', score: 'name', name: 'date' };
-const SORT_LABELS: Record<SortKey, string> = {
-  date: 'По дате',
-  score: 'По риску',
-  name: 'По имени',
+const SORT_KEYS: Record<SortKey, DictKey> = {
+  date: 'home.sortDate',
+  score: 'home.sortScore',
+  name: 'home.sortName',
 };
 
 export default function DashboardClient({ moles: initial }: { moles: MoleDto[] }) {
   const [moles, setMoles] = useState(initial);
   const [sortBy, setSortBy] = useState<SortKey>('date');
+  const { t, locale } = useLocale();
 
   const sorted = [...moles].sort((a, b) => {
     if (sortBy === 'score') return b.score - a.score;
-    if (sortBy === 'name') return a.name.localeCompare(b.name, 'ru');
+    if (sortBy === 'name') return a.name.localeCompare(b.name, locale);
     return 0; // date — серверный порядок (новые сверху)
   });
 
   const alertMole = moles.find((m) => m.changed);
   const monthLabel = new Date()
-    .toLocaleString('ru', { month: 'long', year: 'numeric' })
+    .toLocaleString(locale === 'en' ? 'en' : 'ru', { month: 'long', year: 'numeric' })
     .toUpperCase();
 
   const handleDelete = async (id: number) => {
     const mole = moles.find((m) => m.id === id);
     if (!mole) return;
-    if (!confirm(`«${mole.name}» будет удалена без возможности восстановления. Удалить?`)) return;
+    if (!confirm(`«${mole.name}» ${t('home.confirmDelete')}`)) return;
     const res = await fetch(`/api/moles/${id}`, { method: 'DELETE' });
     if (res.ok) setMoles((p) => p.filter((m) => m.id !== id));
-    else alert('Не удалось удалить. Попробуйте ещё раз.');
+    else alert(t('home.deleteFailed'));
   };
 
   return (
@@ -46,7 +49,7 @@ export default function DashboardClient({ moles: initial }: { moles: MoleDto[] }
           {monthLabel}
         </p>
         <h1 className="font-display text-[26px] font-extrabold uppercase tracking-tight">
-          Мои родинки
+          {t('home.title')}
         </h1>
       </div>
 
@@ -62,10 +65,10 @@ export default function DashboardClient({ moles: initial }: { moles: MoleDto[] }
           <span className="w-2.5 h-2.5 bg-risk-high shrink-0 animate-blink" />
           <span className="flex-1 min-w-0">
             <span className="block font-label text-[11px] font-bold uppercase tracking-wider text-risk-high mb-0.5">
-              Обнаружены изменения
+              {t('home.alertTitle')}
             </span>
             <span className="block text-[12px] text-grey truncate">
-              {alertMole.name} · рекомендуем показать врачу
+              {alertMole.name} · {t('home.alertSub')}
             </span>
           </span>
           <span className="font-label text-base">→</span>
@@ -76,14 +79,14 @@ export default function DashboardClient({ moles: initial }: { moles: MoleDto[] }
       {moles.length > 0 && (
         <div className="flex items-center justify-between mb-3">
           <p className="font-label text-[9px] uppercase tracking-[0.22em] text-grey font-bold">
-            Под наблюдением · {moles.length}
+            {t('home.section')} · {moles.length}
           </p>
           <button
             type="button"
             onClick={() => setSortBy(NEXT_SORT[sortBy])}
             className="border-2 border-ink bg-white px-2.5 py-1 font-label text-[9px] font-bold uppercase tracking-wider hover:bg-ink hover:text-paper transition-colors"
           >
-            {SORT_LABELS[sortBy]} ↕
+            {t(SORT_KEYS[sortBy])} ↕
           </button>
         </div>
       )}
@@ -94,11 +97,13 @@ export default function DashboardClient({ moles: initial }: { moles: MoleDto[] }
           <span className="w-16 h-16 border-2 border-ink flex items-center justify-center">
             <span className="w-6 h-5 rounded-full bg-ink/60" />
           </span>
-          <p className="font-display text-[15px] font-bold uppercase tracking-tight">Пока пусто</p>
+          <p className="font-display text-[15px] font-bold uppercase tracking-tight">
+            {t('home.emptyTitle')}
+          </p>
           <p className="font-label text-[10px] uppercase tracking-wider text-grey text-center leading-relaxed px-8">
-            Добавьте первую родинку,
+            {t('home.emptyHint1')}
             <br />
-            чтобы начать наблюдение
+            {t('home.emptyHint2')}
           </p>
         </div>
       ) : (
@@ -116,7 +121,7 @@ export default function DashboardClient({ moles: initial }: { moles: MoleDto[] }
             href="/moles/new"
             className="hard hard-hover hard-press block w-full py-3.5 bg-accent text-white text-center font-label text-[12px] font-bold uppercase tracking-wider"
           >
-            + Добавить родинку
+            {t('home.add')}
           </Link>
         </div>
       </div>

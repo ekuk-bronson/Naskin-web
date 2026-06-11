@@ -4,14 +4,16 @@ import {
   CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from 'recharts';
 import { scoreColor } from '@/lib/riskLevels';
+import { useLocale } from '@/lib/i18n-client';
 import type { MoleHistoryPoint } from '@/lib/types';
 
 /** Линейный график динамики score — жёсткая сетка, чернильные оси. */
 export default function HistoryChart({ history }: { history: MoleHistoryPoint[] }) {
+  const { t } = useLocale();
   if (history.length === 0) {
     return (
       <p className="font-label text-[10px] uppercase tracking-wider text-grey text-center py-8">
-        Нет данных
+        {t('chart.noData')}
       </p>
     );
   }
@@ -43,7 +45,7 @@ export default function HistoryChart({ history }: { history: MoleHistoryPoint[] 
               fontFamily: 'var(--font-label)',
             }}
             labelStyle={{ color: '#6E6C66' }}
-            formatter={(v) => [String(v), 'Оценка']}
+            formatter={(v) => [String(v), t('chart.score')]}
           />
           <Line
             type="linear"

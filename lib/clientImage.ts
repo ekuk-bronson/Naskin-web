@@ -5,9 +5,12 @@
  * и упрощённая проверка качества — веб-аналог services/preprocessing.ts.
  */
 
+export type QualityReason = 'small' | 'dark' | 'bright';
+
 export interface QualityResult {
   ok: boolean;
-  reason?: string;
+  /** Код причины — локализуется на стороне UI. */
+  reason?: QualityReason;
 }
 
 const MAX_SIDE = 768;
@@ -48,7 +51,7 @@ export async function checkPhotoQuality(dataUrl: string): Promise<QualityResult>
   const img = await loadImage(dataUrl);
 
   if (Math.min(img.width, img.height) < 224) {
-    return { ok: false, reason: 'Снимок слишком маленький — нужно минимум 224×224 пикселя.' };
+    return { ok: false, reason: 'small' };
   }
 
   const canvas = document.createElement('canvas');
@@ -66,7 +69,7 @@ export async function checkPhotoQuality(dataUrl: string): Promise<QualityResult>
   }
   const avg = sum / (side * side);
 
-  if (avg < 35) return { ok: false, reason: 'Снимок слишком тёмный — добавьте освещение.' };
-  if (avg > 225) return { ok: false, reason: 'Снимок пересвечен — уберите прямой свет/вспышку.' };
+  if (avg < 35) return { ok: false, reason: 'dark' };
+  if (avg > 225) return { ok: false, reason: 'bright' };
   return { ok: true };
 }

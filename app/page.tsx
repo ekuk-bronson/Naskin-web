@@ -1,6 +1,7 @@
 import { sessionUserId } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { serializeMole } from '@/lib/serializeMole';
+import { getLocale } from '@/lib/locale-server';
 import Shell from '@/components/Shell';
 import DashboardClient from '@/components/DashboardClient';
 import Landing from '@/components/Landing';
@@ -8,7 +9,7 @@ import Landing from '@/components/Landing';
 export default async function HomePage() {
   const userId = await sessionUserId();
   // Гостям — лендинг, авторизованным — дашборд
-  if (!userId) return <Landing />;
+  if (!userId) return <Landing locale={await getLocale()} />;
 
   const moles = (
     await prisma.mole.findMany({ where: { userId }, orderBy: { createdAt: 'desc' } })

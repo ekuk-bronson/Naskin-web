@@ -1,7 +1,12 @@
+'use client';
+
 import { RISK_LEVELS, type RiskLevel } from '@/lib/riskLevels';
+import { useLocale } from '@/lib/i18n-client';
+import type { DictKey } from '@/lib/i18n';
 
 /** Чип уровня риска — жёсткий прямоугольник с цветной рамкой. */
 export default function RiskBadge({ risk }: { risk: RiskLevel }) {
+  const { t } = useLocale();
   const cfg = RISK_LEVELS[risk];
   return (
     <span
@@ -9,7 +14,7 @@ export default function RiskBadge({ risk }: { risk: RiskLevel }) {
       style={{ color: cfg.color, borderColor: cfg.color }}
     >
       <span className="w-1.5 h-1.5" style={{ backgroundColor: cfg.color }} />
-      {cfg.short}
+      {t(`risk.${risk}.short` as DictKey)}
     </span>
   );
 }

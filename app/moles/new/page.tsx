@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation';
 import { sessionUserId } from '@/auth';
 import { prisma } from '@/lib/prisma';
+import { getT } from '@/lib/i18n';
+import { getLocale } from '@/lib/locale-server';
 import AddWizard from '@/components/AddWizard';
 
 export default async function NewMolePage({
@@ -23,12 +25,13 @@ export default async function NewMolePage({
   }
 
   const count = await prisma.mole.count({ where: { userId } });
+  const t = getT(await getLocale());
 
   return (
     <AddWizard
       rescanMoleId={rescanMole?.id ?? null}
       rescanMoleName={rescanMole?.name ?? null}
-      defaultName={`Родинка #${count + 1}`}
+      defaultName={`${t('wizard.defaultName')} #${count + 1}`}
     />
   );
 }

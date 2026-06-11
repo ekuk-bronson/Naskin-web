@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import type { MoleDto } from '@/lib/types';
 import { RISK_LEVELS } from '@/lib/riskLevels';
+import { useLocale } from '@/lib/i18n-client';
 import RiskBadge from './RiskBadge';
 
 /** Карточка родинки в списке — белая плита с чернильной рамкой. */
@@ -13,6 +14,7 @@ export default function MoleCard({
   mole: MoleDto;
   onDelete?: (id: number) => void;
 }) {
+  const { t } = useLocale();
   const cfg = RISK_LEVELS[mole.risk];
 
   return (
@@ -45,7 +47,7 @@ export default function MoleCard({
           )}
         </div>
         <p className="font-label text-[10px] uppercase tracking-wider text-grey truncate">
-          {mole.loc} · {mole.days} дн.
+          {mole.loc} · {mole.days} {t('common.days')}
         </p>
       </div>
 

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Unbounded, Inter_Tight, JetBrains_Mono } from "next/font/google";
+import { I18nProvider } from "@/lib/i18n-client";
+import { getLocale } from "@/lib/locale-server";
 import "./globals.css";
 
 const headline = Unbounded({
@@ -23,17 +25,20 @@ export const metadata: Metadata = {
     "Дерматологический мониторинг родинок: фото, анализ риска, история изменений.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
   return (
     <html
-      lang="ru"
+      lang={locale}
       className={`${headline.variable} ${body.variable} ${label.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <I18nProvider locale={locale}>{children}</I18nProvider>
+      </body>
     </html>
   );
 }

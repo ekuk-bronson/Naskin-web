@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation';
 import { sessionUserId } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { serializeMole } from '@/lib/serializeMole';
+import { getT, pluralScans } from '@/lib/i18n';
+import { getLocale } from '@/lib/locale-server';
 import Shell from '@/components/Shell';
 import RiskBadge from '@/components/RiskBadge';
 import HistoryChart from '@/components/HistoryChart';
@@ -10,6 +12,9 @@ import HistoryChart from '@/components/HistoryChart';
 export default async function HistoryPage() {
   const userId = await sessionUserId();
   if (!userId) redirect('/login');
+
+  const locale = await getLocale();
+  const t = getT(locale);
 
   const moles = (
     await prisma.mole.findMany({ where: { userId }, orderBy: { updatedAt: 'desc' } })
@@ -19,9 +24,11 @@ export default async function HistoryPage() {
     <Shell>
       <div className="mb-6">
         <p className="font-label text-[9px] tracking-[0.25em] text-accent font-bold mb-1.5 uppercase">
-          Динамика наблюдений
+          {t('history.sup')}
         </p>
-        <h1 className="font-display text-[26px] font-extrabold uppercase tracking-tight">История</h1>
+        <h1 className="font-display text-[26px] font-extrabold uppercase tracking-tight">
+          {t('history.title')}
+        </h1>
       </div>
 
       {moles.length === 0 ? (
@@ -29,11 +36,11 @@ export default async function HistoryPage() {
           <span className="w-16 h-16 border-2 border-ink flex items-center justify-center">
             <span className="w-6 h-5 rounded-full bg-ink/60" />
           </span>
-          <p className="font-display text-[15px] font-bold uppercase tracking-tight">История пуста</p>
-          <p className="font-label text-[10px] uppercase tracking-wider text-grey text-center leading-relaxed px-8">
-            Добавьте родинку — после каждого
-            <br />
-            сканирования здесь появится динамика
+          <p className="font-display text-[15px] font-bold uppercase tracking-tight">
+            {t('history.empty')}
+          </p>
+          <p className="font-label text-[10px] uppercase tracking-wider text-grey text-center leading-relaxed px-8 max-w-xs">
+            {t('history.hint')}
           </p>
         </div>
       ) : (
@@ -50,13 +57,7 @@ export default async function HistoryPage() {
                     {m.name}
                   </p>
                   <p className="font-label text-[10px] uppercase tracking-wider text-grey truncate">
-                    {m.loc} · {m.history.length}{' '}
-                    {m.history.length % 10 === 1 && m.history.length % 100 !== 11
-                      ? 'замер'
-                      : [2, 3, 4].includes(m.history.length % 10) &&
-                          ![12, 13, 14].includes(m.history.length % 100)
-                        ? 'замера'
-                        : 'замеров'}
+                    {m.loc} · {m.history.length} {pluralScans(locale, m.history.length)}
                   </p>
                 </div>
                 <RiskBadge risk={m.risk} />

@@ -3,29 +3,22 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import {
-  BODY_LOCATIONS, getRiskLevel, MEDICAL_DISCLAIMER, RISK_LEVELS, scoreColor,
-} from '@/lib/riskLevels';
+import { getRiskLevel, RISK_LEVELS, scoreColor } from '@/lib/riskLevels';
+import { LOCATION_KEYS, pluralScans, type DictKey } from '@/lib/i18n';
+import { useLocale } from '@/lib/i18n-client';
 import type { MoleDto } from '@/lib/types';
 import HistoryChart from './HistoryChart';
 
 type Tab = 'info' | 'history' | 'compare';
-const TAB_LABELS: Record<Tab, string> = {
-  info: 'Анализ',
-  history: 'История',
-  compare: 'Сравнение',
-};
-
-const SUMMARIES_FALLBACK: Record<string, string> = {
-  low: 'Типичная доброкачественная родинка. Признаков беспокойства не выявлено.',
-  notable: 'Родинка имеет лёгкие отличительные черты, но без явных признаков опасности.',
-  moderate: 'Обнаружены признаки, требующие профессиональной оценки.',
-  high: 'Выявлены признаки, характерные для подозрительных образований.',
-  urgent: 'Признаки требуют немедленной оценки специалиста.',
+const TAB_KEYS: Record<Tab, DictKey> = {
+  info: 'detail.tabInfo',
+  history: 'detail.tabHistory',
+  compare: 'detail.tabCompare',
 };
 
 export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
   const router = useRouter();
+  const { t, locale } = useLocale();
   const [mole, setMole] = useState(initial);
   const [tab, setTab] = useState<Tab>('info');
   const [editing, setEditing] = useState(false);
@@ -52,7 +45,7 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
       setMole({ ...mole, name, loc });
       setEditing(false);
     } else {
-      alert('Не удалось сохранить изменения.');
+      alert(t('detail.saveFailed'));
     }
   };
 
@@ -74,12 +67,12 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
         <div className="flex-1 min-w-0">
           <p className="text-[14px] font-bold uppercase tracking-tight truncate">{mole.name}</p>
           <p className="font-label text-[9px] uppercase tracking-wider text-grey truncate">
-            {mole.loc} · с {mole.since}
+            {mole.loc} · {t('detail.since')} {mole.since}
           </p>
         </div>
         {mole.changed && !editing && (
           <span className="border-2 border-risk-moderate px-2.5 py-1 font-label text-[9px] font-bold uppercase tracking-wider text-risk-moderate shrink-0">
-            Изменилась
+            {t('detail.changed')}
           </span>
         )}
         {editing ? (
@@ -89,14 +82,14 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
               onClick={() => setEditing(false)}
               className="border-2 border-ink bg-white px-3 py-1.5 font-label text-[10px] font-bold uppercase tracking-wider shrink-0 hover:bg-mist/50 transition-colors"
             >
-              Отмена
+              {t('common.cancel')}
             </button>
             <button
               type="button"
               onClick={saveEdit}
               className="border-2 border-ink bg-ink text-paper px-3 py-1.5 font-label text-[10px] font-bold uppercase tracking-wider shrink-0"
             >
-              Сохранить
+              {t('common.save')}
             </button>
           </>
         ) : (
@@ -115,7 +108,7 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
       {editing && (
         <div className="mx-5 mb-4 hard-sm bg-white p-4">
           <p className="font-label text-[9px] font-bold tracking-[0.22em] uppercase text-grey mb-2">
-            Название
+            {t('wizard.lblName')}
           </p>
           <input
             value={editName}
@@ -126,14 +119,15 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
             className="w-full border-2 border-ink bg-paper px-3 py-2 text-sm font-semibold placeholder:text-mist outline-none"
           />
           <p className="font-label text-[9px] font-bold tracking-[0.22em] uppercase text-grey mt-4 mb-2">
-            Расположение
+            {t('wizard.lblLoc')}
           </p>
           <div className="flex flex-wrap gap-1.5">
-            {BODY_LOCATIONS.map((z) => {
+            {LOCATION_KEYS.map((key) => {
+              const z = t(key);
               const on = editLoc === z;
               return (
                 <button
-                  key={z}
+                  key={key}
                   type="button"
                   onClick={() => setEditLoc(z)}
                   className={`border-2 border-ink px-3 py-1.5 font-label text-[10px] font-bold uppercase tracking-wider transition-colors ${
@@ -170,13 +164,13 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
               className="font-display text-[22px] font-extrabold uppercase tracking-tight leading-7 mb-1.5"
               style={{ color: cfg.color }}
             >
-              {cfg.label}
+              {t(`risk.${mole.risk}.label` as DictKey)}
             </p>
             <p className="text-[12px] font-semibold leading-4 mb-2" style={{ color: cfg.color }}>
-              {mole.rec ?? cfg.rec}
+              {t(`risk.${mole.risk}.rec` as DictKey)}
             </p>
             <p className="font-label text-[10px] uppercase tracking-wider text-grey">
-              Ø {mole.size} · {mole.days} дн. назад
+              Ø {mole.size} · {mole.days} {t('common.daysAgo')}
             </p>
           </div>
         </div>
@@ -189,7 +183,7 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
             href={`/moles/new?moleId=${mole.id}`}
             className="hard-sm hard-hover hard-press block w-full py-3.5 bg-accent text-white text-center font-label text-[12px] font-bold uppercase tracking-wider"
           >
-            Пересканировать
+            {t('detail.rescan')}
           </Link>
         </div>
       )}
@@ -197,18 +191,18 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
       {/* Вкладки — сегментированная линейка */}
       <div className="px-5 pb-4">
         <div className="grid grid-cols-3 border-2 border-ink bg-white">
-          {(Object.keys(TAB_LABELS) as Tab[]).map((t, i) => {
-            const active = tab === t;
+          {(Object.keys(TAB_KEYS) as Tab[]).map((tb, i) => {
+            const active = tab === tb;
             return (
               <button
-                key={t}
+                key={tb}
                 type="button"
-                onClick={() => setTab(t)}
+                onClick={() => setTab(tb)}
                 className={`py-2.5 font-label text-[10px] font-bold uppercase tracking-wider transition-colors ${
                   i < 2 ? 'border-r-2 border-ink' : ''
                 } ${active ? 'bg-ink text-paper' : 'hover:bg-mist/50'}`}
               >
-                {TAB_LABELS[t]}
+                {t(TAB_KEYS[tb])}
               </button>
             );
           })}
@@ -221,15 +215,15 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
           <>
             <div className="bg-white p-4" style={{ border: `2px solid ${cfg.color}` }}>
               <p className="text-[13px] leading-5 mb-2.5">
-                {mole.summary ?? SUMMARIES_FALLBACK[mole.risk]}
+                {t(`risk.${mole.risk}.summary` as DictKey)}
               </p>
               <p className="font-label text-[11px] font-bold uppercase tracking-wider" style={{ color: cfg.color }}>
-                → {mole.rec ?? cfg.rec}
+                → {t(`risk.${mole.risk}.rec` as DictKey)}
               </p>
             </div>
             <div className="mt-3 border-2 border-ink bg-paper px-3.5 py-3">
               <p className="font-label text-[9px] uppercase tracking-wider text-grey leading-4 text-center">
-                {MEDICAL_DISCLAIMER}
+                {t('common.disclaimer')}
               </p>
             </div>
           </>
@@ -241,16 +235,10 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
             <div className="hard-sm bg-white p-4 mb-3">
               <div className="flex justify-between items-center mb-3.5">
                 <p className="font-label text-[9px] font-bold tracking-[0.22em] uppercase text-grey">
-                  Динамика
+                  {t('detail.dyn')}
                 </p>
                 <p className="font-label text-[10px] font-bold uppercase tracking-wider text-accent">
-                  {mole.history.length}{' '}
-                  {mole.history.length % 10 === 1 && mole.history.length % 100 !== 11
-                    ? 'замер'
-                    : [2, 3, 4].includes(mole.history.length % 10) &&
-                        ![12, 13, 14].includes(mole.history.length % 100)
-                      ? 'замера'
-                      : 'замеров'}
+                  {mole.history.length} {pluralScans(locale, mole.history.length)}
                 </p>
               </div>
               <HistoryChart history={mole.history} />
@@ -269,7 +257,7 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
                       </span>
                       <span className="font-label text-[9px] uppercase text-grey">{h.m}</span>
                       <span className="font-label text-[9px] font-bold uppercase tracking-wider" style={{ color }}>
-                        {RISK_LEVELS[getRiskLevel(h.s)].short}
+                        {t(`risk.${getRiskLevel(h.s)}.short` as DictKey)}
                       </span>
                     </div>
                   );
@@ -302,7 +290,7 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
                         {h.m} {i === 0 ? mole.since.split(' ')[1] : new Date().getFullYear()}
                       </p>
                       <p className="font-display text-[14px] font-bold uppercase tracking-tight" style={{ color }}>
-                        {RISK_LEVELS[getRiskLevel(h.s)].short}
+                        {t(`risk.${getRiskLevel(h.s)}.short` as DictKey)}
                       </p>
                     </div>
                   );
@@ -313,16 +301,16 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
                   const diff = last.s - first.s;
                   const dynamic =
                     Math.abs(diff) < 0.3
-                      ? 'Стабильна'
+                      ? t('detail.stable')
                       : diff > 0
-                        ? 'Растёт'
-                        : 'Снижается';
+                        ? t('detail.rising')
+                        : t('detail.falling');
                   const dynColor =
                     Math.abs(diff) < 0.3 ? 'var(--ink)' : diff > 0 ? '#D03020' : '#00904A';
                   const rows: Array<[string, string, string]> = [
-                    ['Динамика', dynamic, dynColor],
-                    ['Количество замеров', String(mole.history.length), 'var(--ink)'],
-                    ['Текущий уровень', cfg.short, cfg.color],
+                    [t('detail.dynamic'), dynamic, dynColor],
+                    [t('detail.measurements'), String(mole.history.length), 'var(--ink)'],
+                    [t('detail.current'), t(`risk.${mole.risk}.short` as DictKey), cfg.color],
                   ];
                   return rows.map(([label, val, color], i) => (
                     <div
@@ -340,9 +328,9 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
             </>
           ) : (
             <p className="font-label text-[10px] uppercase tracking-wider text-grey text-center leading-relaxed mt-10">
-              Для сравнения нужно минимум два замера.
+              {t('detail.compareNeeds1')}
               <br />
-              Пересканируйте родинку позже.
+              {t('detail.compareNeeds2')}
             </p>
           ))}
       </div>
