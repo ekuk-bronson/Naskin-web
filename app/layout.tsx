@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Playfair_Display } from "next/font/google";
+import { Unbounded, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const headline = Unbounded({
+  variable: "--font-headline",
   subsets: ["latin", "cyrillic"],
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const body = Inter_Tight({
+  variable: "--font-body",
+  subsets: ["latin", "cyrillic"],
+});
+
+const label = JetBrains_Mono({
+  variable: "--font-label",
   subsets: ["latin", "cyrillic"],
 });
 
@@ -24,8 +29,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`${geistSans.variable} ${playfair.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col grain">{children}</body>
+    <html
+      lang="ru"
+      className={`${headline.variable} ${body.variable} ${label.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }

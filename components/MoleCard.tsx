@@ -1,11 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { RISK_LEVELS } from '@/lib/riskLevels';
 import type { MoleDto } from '@/lib/types';
+import { RISK_LEVELS } from '@/lib/riskLevels';
 import RiskBadge from './RiskBadge';
 
-/** Карточка родинки в списке — аналог mole card из app/(tabs)/index.tsx. */
+/** Карточка родинки в списке — белая плита с чернильной рамкой. */
 export default function MoleCard({
   mole,
   onDelete,
@@ -16,35 +16,35 @@ export default function MoleCard({
   const cfg = RISK_LEVELS[mole.risk];
 
   return (
-    <div className="group card-lift relative bg-white border border-line rounded-2xl px-4 py-3.5 flex items-center gap-3.5 shadow-[0_3px_12px_rgba(28,26,24,0.04)]">
-      <Link href={`/moles/${mole.id}`} className="absolute inset-0 rounded-2xl" aria-label={mole.name} />
+    <div className="group hard-sm hard-hover relative bg-white px-4 py-3.5 flex items-center gap-3.5">
+      <Link href={`/moles/${mole.id}`} className="absolute inset-0" aria-label={mole.name} />
 
       {mole.imageUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={mole.imageUrl}
           alt=""
-          className="w-[50px] h-[50px] rounded-[15px] object-cover bg-line shrink-0"
+          className="w-12 h-12 object-cover border-2 border-ink shrink-0"
         />
       ) : (
         <span
-          className="w-[50px] h-[50px] rounded-[15px] border-[1.5px] bg-[#F8F0E8] flex items-center justify-center shrink-0"
-          style={{ borderColor: cfg.colorBorder }}
+          className="w-12 h-12 border-2 flex items-center justify-center shrink-0 bg-paper"
+          style={{ borderColor: cfg.color }}
         >
-          <span className="w-6 h-[22px] rounded-full bg-[#7A5035]" />
+          <span className="w-5 h-4 rounded-full bg-ink/70" />
         </span>
       )}
 
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5 mb-1">
-          <p className="text-[13px] font-bold text-dark tracking-tight truncate">{mole.name}</p>
+        <div className="flex items-center gap-2 mb-1">
+          <p className="text-[13px] font-bold uppercase tracking-tight truncate">{mole.name}</p>
           {mole.changed && (
-            <span className="w-[18px] h-[18px] rounded-full bg-[#FFF0F3] border border-[#FFD0D8] flex items-center justify-center text-[9px] shrink-0">
-              ⚠
+            <span className="font-label text-[9px] font-bold text-risk-high border-2 border-risk-high px-1 shrink-0">
+              !
             </span>
           )}
         </div>
-        <p className="text-[11px] text-dim truncate">
+        <p className="font-label text-[10px] uppercase tracking-wider text-grey truncate">
           {mole.loc} · {mole.days} дн.
         </p>
       </div>
@@ -58,11 +58,11 @@ export default function MoleCard({
             e.preventDefault();
             onDelete(mole.id);
           }}
-          className="relative z-10 w-8 h-8 rounded-full border border-line bg-white text-faint hover:text-[#E8003D] hover:border-[#FFD0D8] transition flex items-center justify-center text-sm opacity-0 group-hover:opacity-100 focus:opacity-100"
+          className="relative z-10 w-8 h-8 border-2 border-ink bg-white text-ink hover:bg-risk-high hover:border-risk-high hover:text-white transition-colors flex items-center justify-center font-label text-[11px] font-bold opacity-0 group-hover:opacity-100 focus:opacity-100"
           aria-label={`Удалить ${mole.name}`}
           title="Удалить"
         >
-          🗑
+          ✕
         </button>
       )}
     </div>

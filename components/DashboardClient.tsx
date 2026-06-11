@@ -27,7 +27,7 @@ export default function DashboardClient({ moles: initial }: { moles: MoleDto[] }
   const alertMole = moles.find((m) => m.changed);
   const monthLabel = new Date()
     .toLocaleString('ru', { month: 'long', year: 'numeric' })
-    .replace(/^./, (c) => c.toUpperCase());
+    .toUpperCase();
 
   const handleDelete = async (id: number) => {
     const mole = moles.find((m) => m.id === id);
@@ -41,13 +41,13 @@ export default function DashboardClient({ moles: initial }: { moles: MoleDto[] }
   return (
     <div className="pb-24">
       {/* Заголовок */}
-      <div className="flex items-end justify-between mb-4">
-        <div>
-          <p className="text-[9px] tracking-[0.22em] uppercase text-stone font-semibold mb-1">
-            {monthLabel}
-          </p>
-          <h1 className="font-display text-[30px] font-bold tracking-tight text-dark">Мои родинки</h1>
-        </div>
+      <div className="mb-5">
+        <p className="font-label text-[9px] tracking-[0.25em] text-accent font-bold mb-1.5">
+          {monthLabel}
+        </p>
+        <h1 className="font-display text-[26px] font-extrabold uppercase tracking-tight">
+          Мои родинки
+        </h1>
       </div>
 
       <HeroCard moles={moles} />
@@ -56,31 +56,32 @@ export default function DashboardClient({ moles: initial }: { moles: MoleDto[] }
       {alertMole && (
         <Link
           href={`/moles/${alertMole.id}`}
-          className="flex items-center gap-3 bg-white border border-[#F0D8DC] rounded-2xl px-4 py-3.5 mb-3.5 shadow-[0_4px_16px_rgba(232,0,61,0.07)] hover:shadow-[0_6px_20px_rgba(232,0,61,0.12)] transition"
+          className="hard-sm hard-hover flex items-center gap-3 bg-white px-4 py-3.5 mb-4"
+          style={{ borderColor: 'var(--risk-high)', boxShadow: '3px 3px 0 var(--risk-high)' }}
         >
-          <span className="w-2 h-2 rounded-full bg-[#E8003D] shrink-0 animate-dot" />
+          <span className="w-2.5 h-2.5 bg-risk-high shrink-0 animate-blink" />
           <span className="flex-1 min-w-0">
-            <span className="block text-[12px] font-bold text-[#E8003D] mb-0.5">
+            <span className="block font-label text-[11px] font-bold uppercase tracking-wider text-risk-high mb-0.5">
               Обнаружены изменения
             </span>
-            <span className="block text-[11px] text-dim truncate">
+            <span className="block text-[12px] text-grey truncate">
               {alertMole.name} · рекомендуем показать врачу
             </span>
           </span>
-          <span className="text-xl text-faint">›</span>
+          <span className="font-label text-base">→</span>
         </Link>
       )}
 
       {/* Сортировка */}
       {moles.length > 0 && (
-        <div className="flex items-center justify-between mb-2.5">
-          <p className="text-[9px] tracking-[0.2em] uppercase text-faint font-semibold">
+        <div className="flex items-center justify-between mb-3">
+          <p className="font-label text-[9px] uppercase tracking-[0.22em] text-grey font-bold">
             Под наблюдением · {moles.length}
           </p>
           <button
             type="button"
             onClick={() => setSortBy(NEXT_SORT[sortBy])}
-            className="px-2.5 py-1 rounded-full bg-white border border-line text-[10px] font-semibold text-stone hover:bg-line/40 transition"
+            className="border-2 border-ink bg-white px-2.5 py-1 font-label text-[9px] font-bold uppercase tracking-wider hover:bg-ink hover:text-paper transition-colors"
           >
             {SORT_LABELS[sortBy]} ↕
           </button>
@@ -89,17 +90,19 @@ export default function DashboardClient({ moles: initial }: { moles: MoleDto[] }
 
       {/* Список / пустое состояние */}
       {moles.length === 0 ? (
-        <div className="flex flex-col items-center py-14 gap-2">
-          <span className="w-[82px] h-[82px] rounded-full bg-line border border-[#E0DAD2] flex items-center justify-center mb-1 shadow-[0_4px_12px_rgba(28,26,24,0.04)]">
-            <span className="w-9 h-8 rounded-full bg-faint" />
+        <div className="hard bg-white flex flex-col items-center py-14 gap-3">
+          <span className="w-16 h-16 border-2 border-ink flex items-center justify-center">
+            <span className="w-6 h-5 rounded-full bg-ink/60" />
           </span>
-          <p className="text-[15px] font-bold text-dim tracking-tight">Пока пусто</p>
-          <p className="text-xs text-faint text-center leading-relaxed px-8">
-            Добавьте первую родинку, чтобы начать наблюдение за её состоянием.
+          <p className="font-display text-[15px] font-bold uppercase tracking-tight">Пока пусто</p>
+          <p className="font-label text-[10px] uppercase tracking-wider text-grey text-center leading-relaxed px-8">
+            Добавьте первую родинку,
+            <br />
+            чтобы начать наблюдение
           </p>
         </div>
       ) : (
-        <div className="stagger-in space-y-2">
+        <div className="stagger-in space-y-3">
           {sorted.map((m) => (
             <MoleCard key={m.id} mole={m} onDelete={handleDelete} />
           ))}
@@ -107,11 +110,11 @@ export default function DashboardClient({ moles: initial }: { moles: MoleDto[] }
       )}
 
       {/* Закреплённая кнопка добавления */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[#FAFAF8]/95 backdrop-blur border-t border-line">
-        <div className="max-w-2xl mx-auto px-5 py-3">
+      <div className="fixed bottom-0 left-0 right-0 bg-paper border-t-2 border-ink">
+        <div className="max-w-2xl mx-auto px-5 py-3.5">
           <Link
             href="/moles/new"
-            className="btn-sheen block w-full py-4 rounded-[18px] bg-dark text-center text-sm font-bold text-[#F0EDE8] tracking-wide shadow-lg shadow-dark/20 hover:-translate-y-px transition"
+            className="hard hard-hover hard-press block w-full py-3.5 bg-accent text-white text-center font-label text-[12px] font-bold uppercase tracking-wider"
           >
             + Добавить родинку
           </Link>

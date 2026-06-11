@@ -17,37 +17,39 @@ export default async function HistoryPage() {
 
   return (
     <Shell>
-      <div className="mb-5">
-        <p className="text-[9px] tracking-[0.22em] uppercase text-stone font-semibold mb-1">
+      <div className="mb-6">
+        <p className="font-label text-[9px] tracking-[0.25em] text-accent font-bold mb-1.5 uppercase">
           Динамика наблюдений
         </p>
-        <h1 className="font-display text-[30px] font-bold tracking-tight text-dark">История</h1>
+        <h1 className="font-display text-[26px] font-extrabold uppercase tracking-tight">История</h1>
       </div>
 
       {moles.length === 0 ? (
-        <div className="flex flex-col items-center py-14 gap-2">
-          <span className="w-[82px] h-[82px] rounded-full bg-line border border-[#E0DAD2] flex items-center justify-center mb-1">
-            <span className="w-9 h-8 rounded-full bg-faint" />
+        <div className="hard bg-white flex flex-col items-center py-14 gap-3">
+          <span className="w-16 h-16 border-2 border-ink flex items-center justify-center">
+            <span className="w-6 h-5 rounded-full bg-ink/60" />
           </span>
-          <p className="text-[15px] font-bold text-dim tracking-tight">История пуста</p>
-          <p className="text-xs text-faint text-center leading-relaxed px-8">
-            Добавьте родинку — после каждого сканирования здесь появится её динамика.
+          <p className="font-display text-[15px] font-bold uppercase tracking-tight">История пуста</p>
+          <p className="font-label text-[10px] uppercase tracking-wider text-grey text-center leading-relaxed px-8">
+            Добавьте родинку — после каждого
+            <br />
+            сканирования здесь появится динамика
           </p>
         </div>
       ) : (
-        <div className="space-y-3 pb-6">
+        <div className="stagger-in space-y-4 pb-6">
           {moles.map((m) => (
             <Link
               key={m.id}
               href={`/moles/${m.id}`}
-              className="card-lift block bg-white border border-line rounded-2xl p-4 shadow-[0_2px_12px_rgba(28,26,24,0.04)]"
+              className="hard-sm hard-hover block bg-white p-4"
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="min-w-0">
-                  <p className="text-[13px] font-bold text-dark tracking-tight truncate">
+                  <p className="text-[13px] font-bold uppercase tracking-tight truncate">
                     {m.name}
                   </p>
-                  <p className="text-[11px] text-dim truncate">
+                  <p className="font-label text-[10px] uppercase tracking-wider text-grey truncate">
                     {m.loc} · {m.history.length}{' '}
                     {m.history.length % 10 === 1 && m.history.length % 100 !== 11
                       ? 'замер'

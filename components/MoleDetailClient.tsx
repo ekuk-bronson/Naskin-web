@@ -62,23 +62,23 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
   return (
     <div className="flex-1 max-w-2xl w-full mx-auto pb-10">
       {/* Верхняя панель */}
-      <div className="flex items-center gap-3 px-5 pt-4 pb-3.5">
+      <div className="flex items-center gap-3 px-5 h-14 border-b-2 border-ink mb-5">
         <button
           type="button"
           onClick={() => router.back()}
-          className="w-9 h-9 rounded-full border border-line bg-white text-dim flex items-center justify-center shrink-0 hover:bg-line/40 transition"
+          className="w-9 h-9 border-2 border-ink bg-white flex items-center justify-center shrink-0 hover:bg-ink hover:text-paper transition-colors font-label"
           aria-label="Назад"
         >
           ←
         </button>
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-bold tracking-tight text-dark truncate">{mole.name}</p>
-          <p className="text-[11px] text-faint truncate">
+          <p className="text-[14px] font-bold uppercase tracking-tight truncate">{mole.name}</p>
+          <p className="font-label text-[9px] uppercase tracking-wider text-grey truncate">
             {mole.loc} · с {mole.since}
           </p>
         </div>
         {mole.changed && !editing && (
-          <span className="rounded-full border border-[#F0D8A8] bg-[#FFF8F0] px-3 py-1 text-[10px] font-semibold text-[#E06000] shrink-0">
+          <span className="border-2 border-risk-moderate px-2.5 py-1 font-label text-[9px] font-bold uppercase tracking-wider text-risk-moderate shrink-0">
             Изменилась
           </span>
         )}
@@ -87,14 +87,14 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
             <button
               type="button"
               onClick={() => setEditing(false)}
-              className="px-3 py-1.5 rounded-full border border-line bg-white text-[11px] font-semibold text-dim shrink-0"
+              className="border-2 border-ink bg-white px-3 py-1.5 font-label text-[10px] font-bold uppercase tracking-wider shrink-0 hover:bg-mist/50 transition-colors"
             >
               Отмена
             </button>
             <button
               type="button"
               onClick={saveEdit}
-              className="px-3 py-1.5 rounded-full bg-dark text-[11px] font-bold text-[#F0EDE8] shrink-0"
+              className="border-2 border-ink bg-ink text-paper px-3 py-1.5 font-label text-[10px] font-bold uppercase tracking-wider shrink-0"
             >
               Сохранить
             </button>
@@ -103,7 +103,7 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
           <button
             type="button"
             onClick={startEdit}
-            className="w-[34px] h-[34px] rounded-full border border-line bg-white text-stone flex items-center justify-center shrink-0 hover:bg-line/40 transition"
+            className="w-9 h-9 border-2 border-ink bg-white flex items-center justify-center shrink-0 hover:bg-ink hover:text-paper transition-colors text-[13px]"
             aria-label="Редактировать"
           >
             ✎
@@ -113,8 +113,8 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
 
       {/* Карточка редактирования */}
       {editing && (
-        <div className="mx-5 mb-3 bg-white border border-line rounded-2xl p-4 shadow-[0_3px_10px_rgba(28,26,24,0.04)]">
-          <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-faint mb-2">
+        <div className="mx-5 mb-4 hard-sm bg-white p-4">
+          <p className="font-label text-[9px] font-bold tracking-[0.22em] uppercase text-grey mb-2">
             Название
           </p>
           <input
@@ -123,9 +123,9 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
             placeholder={mole.name}
             maxLength={48}
             autoFocus
-            className="w-full border-b border-line py-1.5 text-sm font-semibold text-dark placeholder:text-faint outline-none bg-transparent"
+            className="w-full border-2 border-ink bg-paper px-3 py-2 text-sm font-semibold placeholder:text-mist outline-none"
           />
-          <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-faint mt-4 mb-2">
+          <p className="font-label text-[9px] font-bold tracking-[0.22em] uppercase text-grey mt-4 mb-2">
             Расположение
           </p>
           <div className="flex flex-wrap gap-1.5">
@@ -136,10 +136,8 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
                   key={z}
                   type="button"
                   onClick={() => setEditLoc(z)}
-                  className={`px-3.5 py-1.5 rounded-full border text-[11px] transition ${
-                    on
-                      ? 'bg-dark border-dark text-[#F0EDE8] font-semibold'
-                      : 'bg-bg border-line text-dim font-medium hover:bg-line/40'
+                  className={`border-2 border-ink px-3 py-1.5 font-label text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                    on ? 'bg-ink text-paper' : 'bg-white hover:bg-mist/50'
                   }`}
                 >
                   {z}
@@ -151,94 +149,86 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
       )}
 
       {/* Hero уровня риска */}
-      <div className="px-5 pb-3.5">
+      <div className="px-5 mb-4">
         <div
-          className="bg-white rounded-3xl border border-line p-4.5 flex items-center gap-3.5 relative overflow-hidden p-5"
-          style={{ boxShadow: `0 6px 24px ${cfg.color}1F` }}
+          className="bg-white p-5 flex items-center gap-4 relative"
+          style={{ border: `2px solid ${cfg.color}`, boxShadow: `5px 5px 0 ${cfg.color}` }}
         >
           <span
-            className="w-20 h-20 rounded-[20px] border-[1.5px] overflow-hidden flex items-center justify-center shrink-0"
-            style={{ backgroundColor: cfg.colorBg, borderColor: cfg.colorBorder }}
+            className="w-20 h-20 border-2 overflow-hidden flex items-center justify-center shrink-0 bg-paper"
+            style={{ borderColor: cfg.color }}
           >
             {mole.imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={mole.imageUrl} alt="" className="w-full h-full object-cover" />
             ) : (
-              <span className="w-9 h-8 rounded-full bg-[#7A5035]" />
+              <span className="w-8 h-7 rounded-full bg-ink/70" />
             )}
           </span>
           <div className="flex-1 min-w-0">
             <p
-              className="font-display text-[26px] font-bold tracking-tight leading-8 mb-1.5"
+              className="font-display text-[22px] font-extrabold uppercase tracking-tight leading-7 mb-1.5"
               style={{ color: cfg.color }}
             >
               {cfg.label}
             </p>
-            <p className="text-xs font-semibold leading-4 mb-2 opacity-85" style={{ color: cfg.color }}>
+            <p className="text-[12px] font-semibold leading-4 mb-2" style={{ color: cfg.color }}>
               {mole.rec ?? cfg.rec}
             </p>
-            <p className="text-[11px] text-dim">
+            <p className="font-label text-[10px] uppercase tracking-wider text-grey">
               Ø {mole.size} · {mole.days} дн. назад
             </p>
           </div>
-          {mole.changed && (
-            <span className="absolute top-2.5 right-2.5 rounded-full border border-[#F0D8A8] bg-[#FFF8F0] px-2.5 py-1 text-[9px] font-bold text-[#E06000]">
-              Есть изменения
-            </span>
-          )}
         </div>
       </div>
 
       {/* Пересканировать */}
       {!editing && (
-        <div className="px-5 mb-3">
+        <div className="px-5 mb-4">
           <Link
             href={`/moles/new?moleId=${mole.id}`}
-            className="block w-full py-3.5 rounded-[18px] bg-dark text-center text-[13px] font-bold text-[#F0EDE8] tracking-wide shadow-lg shadow-dark/20 hover:opacity-90 transition"
+            className="hard-sm hard-hover hard-press block w-full py-3.5 bg-accent text-white text-center font-label text-[12px] font-bold uppercase tracking-wider"
           >
             Пересканировать
           </Link>
         </div>
       )}
 
-      {/* Вкладки */}
-      <div className="flex gap-1.5 px-5 pb-3">
-        {(Object.keys(TAB_LABELS) as Tab[]).map((t) => {
-          const active = tab === t;
-          return (
-            <button
-              key={t}
-              type="button"
-              onClick={() => setTab(t)}
-              className={`px-3.5 py-2 rounded-full border-[1.5px] text-[11px] transition ${
-                active
-                  ? 'bg-dark border-dark text-[#F0EDE8] font-bold'
-                  : 'bg-white border-line text-faint font-medium hover:text-dim'
-              }`}
-            >
-              {TAB_LABELS[t]}
-            </button>
-          );
-        })}
+      {/* Вкладки — сегментированная линейка */}
+      <div className="px-5 pb-4">
+        <div className="grid grid-cols-3 border-2 border-ink bg-white">
+          {(Object.keys(TAB_LABELS) as Tab[]).map((t, i) => {
+            const active = tab === t;
+            return (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTab(t)}
+                className={`py-2.5 font-label text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                  i < 2 ? 'border-r-2 border-ink' : ''
+                } ${active ? 'bg-ink text-paper' : 'hover:bg-mist/50'}`}
+              >
+                {TAB_LABELS[t]}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="px-5">
         {/* ── Анализ ── */}
         {tab === 'info' && (
           <>
-            <div
-              className="rounded-[18px] border p-4"
-              style={{ borderColor: cfg.colorBorder, backgroundColor: cfg.colorBg }}
-            >
-              <p className="text-xs text-dim leading-5 mb-2">
+            <div className="bg-white p-4" style={{ border: `2px solid ${cfg.color}` }}>
+              <p className="text-[13px] leading-5 mb-2.5">
                 {mole.summary ?? SUMMARIES_FALLBACK[mole.risk]}
               </p>
-              <p className="text-xs font-semibold" style={{ color: cfg.color }}>
+              <p className="font-label text-[11px] font-bold uppercase tracking-wider" style={{ color: cfg.color }}>
                 → {mole.rec ?? cfg.rec}
               </p>
             </div>
-            <div className="mt-3 rounded-[14px] border border-line bg-[#FBFAF7] px-3.5 py-3">
-              <p className="text-[11px] text-dim leading-4 text-center font-medium">
+            <div className="mt-3 border-2 border-ink bg-paper px-3.5 py-3">
+              <p className="font-label text-[9px] uppercase tracking-wider text-grey leading-4 text-center">
                 {MEDICAL_DISCLAIMER}
               </p>
             </div>
@@ -248,12 +238,12 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
         {/* ── История ── */}
         {tab === 'history' && (
           <>
-            <div className="bg-white border border-line rounded-2xl p-4 mb-2.5 shadow-[0_2px_12px_rgba(28,26,24,0.04)]">
+            <div className="hard-sm bg-white p-4 mb-3">
               <div className="flex justify-between items-center mb-3.5">
-                <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-faint">
+                <p className="font-label text-[9px] font-bold tracking-[0.22em] uppercase text-grey">
                   Динамика
                 </p>
-                <p className="text-[10px] font-semibold text-stone">
+                <p className="font-label text-[10px] font-bold uppercase tracking-wider text-accent">
                   {mole.history.length}{' '}
                   {mole.history.length % 10 === 1 && mole.history.length % 100 !== 11
                     ? 'замер'
@@ -266,22 +256,19 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
               <HistoryChart history={mole.history} />
             </div>
             <div className="overflow-x-auto thin-scroll pb-2">
-              <div className="flex gap-2 px-0.5 w-max">
+              <div className="flex gap-2 w-max">
                 {mole.history.map((h, i) => {
                   const color = scoreColor(h.s);
                   return (
-                    <div key={i} className="flex flex-col items-center gap-1">
+                    <div key={i} className="flex flex-col items-center gap-1.5">
                       <span
-                        className="w-[52px] h-[52px] rounded-2xl border-[1.5px] flex items-center justify-center"
-                        style={{ borderColor: `${color}55`, backgroundColor: `${color}12` }}
+                        className="w-[52px] h-[52px] border-2 flex items-center justify-center bg-white"
+                        style={{ borderColor: color }}
                       >
-                        <span
-                          className="w-[22px] h-5 rounded-full"
-                          style={{ backgroundColor: color }}
-                        />
+                        <span className="w-5 h-4 rounded-full" style={{ backgroundColor: color }} />
                       </span>
-                      <span className="text-[9px] text-faint font-medium">{h.m}</span>
-                      <span className="text-[11px] font-extrabold" style={{ color }}>
+                      <span className="font-label text-[9px] uppercase text-grey">{h.m}</span>
+                      <span className="font-label text-[9px] font-bold uppercase tracking-wider" style={{ color }}>
                         {RISK_LEVELS[getRiskLevel(h.s)].short}
                       </span>
                     </div>
@@ -296,35 +283,32 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
         {tab === 'compare' &&
           (mole.history.length >= 2 && first && last ? (
             <>
-              <div className="flex gap-2.5 mb-3">
+              <div className="grid grid-cols-2 gap-3 mb-3">
                 {[first, last].map((h, i) => {
                   const color = scoreColor(h.s);
                   return (
                     <div
                       key={i}
-                      className="flex-1 rounded-2xl border-[1.5px] p-3.5 flex flex-col items-center"
-                      style={{ borderColor: `${color}44`, backgroundColor: `${color}0A` }}
+                      className="bg-white p-4 flex flex-col items-center"
+                      style={{ border: `2px solid ${color}` }}
                     >
                       <span
-                        className="w-[52px] h-[52px] rounded-2xl border-[1.5px] flex items-center justify-center mb-2.5"
-                        style={{ borderColor: `${color}55`, backgroundColor: `${color}18` }}
+                        className="w-[52px] h-[52px] border-2 flex items-center justify-center mb-2.5"
+                        style={{ borderColor: color }}
                       >
-                        <span
-                          className="w-[22px] h-5 rounded-full"
-                          style={{ backgroundColor: color }}
-                        />
+                        <span className="w-5 h-4 rounded-full" style={{ backgroundColor: color }} />
                       </span>
-                      <p className="text-[10px] text-dim mb-1">
+                      <p className="font-label text-[9px] uppercase tracking-wider text-grey mb-1">
                         {h.m} {i === 0 ? mole.since.split(' ')[1] : new Date().getFullYear()}
                       </p>
-                      <p className="text-sm font-extrabold tracking-tight" style={{ color }}>
+                      <p className="font-display text-[14px] font-bold uppercase tracking-tight" style={{ color }}>
                         {RISK_LEVELS[getRiskLevel(h.s)].short}
                       </p>
                     </div>
                   );
                 })}
               </div>
-              <div className="bg-white border border-line rounded-[18px] px-4 shadow-[0_2px_8px_rgba(28,26,24,0.03)]">
+              <div className="hard-sm bg-white px-4">
                 {(() => {
                   const diff = last.s - first.s;
                   const dynamic =
@@ -334,19 +318,19 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
                         ? 'Растёт'
                         : 'Снижается';
                   const dynColor =
-                    Math.abs(diff) < 0.3 ? '#8B7355' : diff > 0 ? '#D03020' : '#00904A';
+                    Math.abs(diff) < 0.3 ? 'var(--ink)' : diff > 0 ? '#D03020' : '#00904A';
                   const rows: Array<[string, string, string]> = [
                     ['Динамика', dynamic, dynColor],
-                    ['Количество замеров', String(mole.history.length), '#8B7355'],
+                    ['Количество замеров', String(mole.history.length), 'var(--ink)'],
                     ['Текущий уровень', cfg.short, cfg.color],
                   ];
-                  return rows.map(([label, val, color]) => (
+                  return rows.map(([label, val, color], i) => (
                     <div
                       key={label}
-                      className="flex justify-between items-center py-3 border-b border-[#F5F2EE] last:border-b-0"
+                      className={`flex justify-between items-center py-3 ${i < rows.length - 1 ? 'border-b-2 border-mist' : ''}`}
                     >
-                      <span className="text-xs text-dim">{label}</span>
-                      <span className="text-[13px] font-bold" style={{ color }}>
+                      <span className="font-label text-[10px] uppercase tracking-wider text-grey">{label}</span>
+                      <span className="text-[13px] font-bold uppercase" style={{ color }}>
                         {val}
                       </span>
                     </div>
@@ -355,7 +339,7 @@ export default function MoleDetailClient({ mole: initial }: { mole: MoleDto }) {
               </div>
             </>
           ) : (
-            <p className="text-xs text-faint text-center leading-relaxed mt-10">
+            <p className="font-label text-[10px] uppercase tracking-wider text-grey text-center leading-relaxed mt-10">
               Для сравнения нужно минимум два замера.
               <br />
               Пересканируйте родинку позже.

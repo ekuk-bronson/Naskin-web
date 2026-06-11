@@ -9,18 +9,14 @@ import type { AnalysisResult } from '@/lib/mockAnalyzer';
 
 type Step = 1 | 2 | 3;
 
-function StepDots({ current }: { current: Step }) {
+function StepBar({ current }: { current: Step }) {
   return (
-    <span className="flex gap-1.5 items-center">
+    <span className="flex gap-1 items-center">
       {([1, 2, 3] as Step[]).map((s) => (
         <span
           key={s}
-          className="h-1.5 rounded-full transition-all"
-          style={{
-            width: s === current ? 18 : s < current ? 8 : 6,
-            backgroundColor:
-              s === current ? 'var(--dark)' : s < current ? 'var(--stone)' : 'var(--faint)',
-          }}
+          className="w-6 h-1.5 border border-ink"
+          style={{ backgroundColor: s <= current ? 'var(--ink)' : 'transparent' }}
         />
       ))}
     </span>
@@ -158,7 +154,7 @@ export default function AddWizard({
 
   const title =
     step === 3
-      ? 'Анализ…'
+      ? 'Анализ'
       : isRescan
         ? `Повторный скан · ${rescanMoleName ?? ''}`
         : step === 1
@@ -168,22 +164,22 @@ export default function AddWizard({
   return (
     <div className="flex-1 flex flex-col max-w-2xl w-full mx-auto">
       {/* Верхняя панель */}
-      <div className="flex items-center justify-between px-5 h-14 border-b border-line">
+      <div className="flex items-center justify-between px-5 h-14 border-b-2 border-ink">
         <button
           type="button"
           onClick={back}
           disabled={step === 3}
-          className="w-9 h-9 rounded-full border border-line bg-white text-dark flex items-center justify-center disabled:opacity-20 hover:bg-line/40 transition"
+          className="w-9 h-9 border-2 border-ink bg-white flex items-center justify-center disabled:opacity-20 hover:bg-ink hover:text-paper transition-colors font-label"
           aria-label="Назад"
         >
           ←
         </button>
-        <p className="text-[13px] font-semibold text-dark truncate px-3">{title}</p>
-        <StepDots current={step} />
+        <p className="font-label text-[11px] font-bold uppercase tracking-wider truncate px-3">{title}</p>
+        <StepBar current={step} />
       </div>
 
       {error && (
-        <div className="mx-5 mt-4 rounded-2xl border border-[#FFD0D8] bg-[#FFF0F3] px-4 py-3 text-[12px] text-[#E8003D] font-semibold">
+        <div className="mx-5 mt-4 border-2 border-risk-high bg-white px-4 py-3 font-label text-[11px] font-bold uppercase tracking-wider text-risk-high">
           {error}
         </div>
       )}
@@ -191,23 +187,21 @@ export default function AddWizard({
       {/* ── Шаг 1: имя + локация ── */}
       {step === 1 && (
         <>
-          <div className="flex-1 px-6 pt-7 pb-32">
-            <h1 className="font-display text-[32px] font-bold tracking-tight text-dark mb-6">
+          <div className="flex-1 px-5 pt-7 pb-32">
+            <h1 className="font-display text-[26px] font-extrabold uppercase tracking-tight mb-7">
               Как назовём родинку?
             </h1>
-            <p className="text-[10px] font-bold tracking-[0.22em] uppercase text-faint mb-2.5">
+            <p className="font-label text-[9px] font-bold tracking-[0.25em] uppercase text-grey mb-2.5">
               Название
             </p>
-            <div className="bg-white border border-line rounded-2xl px-4 shadow-[0_2px_8px_rgba(28,26,24,0.03)]">
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder={defaultName}
-                maxLength={48}
-                className="w-full py-3.5 text-[15px] font-medium text-dark placeholder:text-faint outline-none bg-transparent"
-              />
-            </div>
-            <p className="text-[10px] font-bold tracking-[0.22em] uppercase text-faint mt-6 mb-2.5">
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={defaultName}
+              maxLength={48}
+              className="w-full border-2 border-ink bg-white px-4 py-3.5 text-[15px] font-medium placeholder:text-mist outline-none focus:bg-paper transition-colors"
+            />
+            <p className="font-label text-[9px] font-bold tracking-[0.25em] uppercase text-grey mt-7 mb-2.5">
               Расположение
             </p>
             <div className="flex flex-wrap gap-2">
@@ -218,10 +212,8 @@ export default function AddWizard({
                     key={l}
                     type="button"
                     onClick={() => setLoc(l)}
-                    className={`px-3.5 py-2 rounded-full border text-xs font-medium transition ${
-                      on
-                        ? 'bg-dark border-dark text-[#F0EDE8] font-semibold'
-                        : 'bg-white border-line text-dark hover:bg-line/40'
+                    className={`border-2 border-ink px-3.5 py-2 font-label text-[11px] font-bold uppercase tracking-wider transition-colors ${
+                      on ? 'bg-ink text-paper' : 'bg-white hover:bg-mist/50'
                     }`}
                   >
                     {l}
@@ -230,15 +222,15 @@ export default function AddWizard({
               })}
             </div>
           </div>
-          <div className="fixed bottom-0 left-0 right-0 bg-bg border-t border-line">
-            <div className="max-w-2xl mx-auto px-6 py-4">
+          <div className="fixed bottom-0 left-0 right-0 bg-paper border-t-2 border-ink">
+            <div className="max-w-2xl mx-auto px-5 py-4">
               <button
                 type="button"
                 onClick={() => setStep(2)}
                 disabled={!loc}
-                className="w-full py-4 rounded-[18px] bg-dark text-sm font-bold text-[#F0EDE8] tracking-wide disabled:opacity-35 hover:opacity-90 transition"
+                className="hard-sm hard-hover hard-press w-full py-3.5 bg-accent text-white font-label text-[12px] font-bold uppercase tracking-wider disabled:opacity-30 disabled:pointer-events-none"
               >
-                {loc ? 'Далее' : 'Выберите расположение'}
+                {loc ? 'Далее →' : 'Выберите расположение'}
               </button>
             </div>
           </div>
@@ -248,8 +240,8 @@ export default function AddWizard({
       {/* ── Шаг 2: фото ── */}
       {step === 2 && (
         <>
-          <div className="flex-1 px-6 pt-7 pb-32">
-            <h1 className="font-display text-[32px] font-bold tracking-tight text-dark mb-6">
+          <div className="flex-1 px-5 pt-7 pb-32">
+            <h1 className="font-display text-[26px] font-extrabold uppercase tracking-tight mb-7">
               Сфотографируйте родинку
             </h1>
 
@@ -259,12 +251,12 @@ export default function AddWizard({
                 <img
                   src={imageUrl}
                   alt="Предпросмотр"
-                  className="w-full max-w-md aspect-square object-cover rounded-3xl"
+                  className="w-full max-w-md aspect-square object-cover border-2 border-ink"
                 />
                 <button
                   type="button"
                   onClick={() => setImageUrl(null)}
-                  className="mt-3 text-xs font-semibold text-stone hover:underline"
+                  className="mt-3 font-label text-[11px] font-bold uppercase tracking-wider text-accent hover:underline"
                 >
                   Переснять
                 </button>
@@ -272,57 +264,57 @@ export default function AddWizard({
             ) : (
               <div
                 {...getRootProps()}
-                className={`h-52 rounded-3xl border-[1.5px] border-dashed flex flex-col items-center justify-center mb-5 transition ${
-                  isDragActive ? 'border-stone bg-stone/5' : 'border-line'
+                className={`h-52 border-2 border-dashed border-ink flex flex-col items-center justify-center mb-5 transition-colors ${
+                  isDragActive ? 'bg-mist/60' : 'bg-white'
                 }`}
               >
                 <input {...getInputProps()} />
-                <span className="text-4xl text-faint mb-3">◎</span>
-                <p className="text-xs text-faint text-center leading-relaxed px-8">
-                  Перетащите фото сюда или используйте кнопки ниже.
+                <span className="font-display text-3xl mb-3">⌖</span>
+                <p className="font-label text-[10px] uppercase tracking-wider text-grey text-center leading-relaxed px-8">
+                  Перетащите фото сюда
                   <br />
-                  Родинка — в центре кадра, при хорошем освещении.
+                  или используйте кнопки ниже
                 </p>
               </div>
             )}
 
             {/* Баннер проверки качества */}
             {imageUrl && qualityLoading && (
-              <div className="flex items-start gap-2.5 rounded-2xl border border-line bg-white px-3.5 py-3 mb-4">
-                <span className="w-2 h-2 rounded-full bg-faint mt-1.5 animate-dot" />
-                <p className="text-xs text-dim font-medium mt-0.5">Проверяем качество снимка…</p>
+              <div className="border-2 border-ink bg-white px-4 py-3 mb-4 flex items-center gap-3">
+                <span className="w-2 h-2 bg-ink animate-blink" />
+                <p className="font-label text-[10px] font-bold uppercase tracking-wider text-grey">
+                  Проверяем качество снимка…
+                </p>
               </div>
             )}
             {imageUrl && !qualityLoading && quality && !quality.ok && !qualityIgnored && (
-              <div className="flex items-start gap-2.5 rounded-2xl border border-[#F0D8A8] bg-[#FFF8F0] px-3.5 py-3 mb-4">
-                <span className="w-2 h-2 rounded-full bg-[#E06000] mt-1.5" />
-                <div className="flex-1">
-                  <p className="text-xs font-bold text-[#E06000] mb-0.5">Проблема со снимком</p>
-                  <p className="text-xs text-dark leading-snug">{quality.reason}</p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <button
-                      type="button"
-                      onClick={() => setImageUrl(null)}
-                      className="text-xs font-bold text-stone hover:underline"
-                    >
-                      Переснять
-                    </button>
-                    <span className="text-xs text-faint">·</span>
-                    <button
-                      type="button"
-                      onClick={() => setQualityIgnored(true)}
-                      className="text-xs font-medium text-dim hover:underline"
-                    >
-                      Всё равно продолжить
-                    </button>
-                  </div>
+              <div className="border-2 border-risk-moderate bg-white px-4 py-3.5 mb-4">
+                <p className="font-label text-[10px] font-bold uppercase tracking-wider text-risk-moderate mb-1">
+                  Проблема со снимком
+                </p>
+                <p className="text-[13px] leading-snug mb-2.5">{quality.reason}</p>
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setImageUrl(null)}
+                    className="font-label text-[10px] font-bold uppercase tracking-wider text-accent hover:underline"
+                  >
+                    Переснять
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setQualityIgnored(true)}
+                    className="font-label text-[10px] uppercase tracking-wider text-grey hover:underline"
+                  >
+                    Всё равно продолжить
+                  </button>
                 </div>
               </div>
             )}
             {imageUrl && !qualityLoading && quality?.ok && (
-              <div className="flex items-start gap-2.5 rounded-2xl border border-[#C8E8D4] bg-[#F0FFF6] px-3.5 py-3 mb-4">
-                <span className="w-2 h-2 rounded-full bg-[#00904A] mt-1.5" />
-                <p className="text-xs font-semibold text-[#00904A] mt-0.5">
+              <div className="border-2 border-risk-low bg-white px-4 py-3 mb-4 flex items-center gap-3">
+                <span className="w-2 h-2 bg-risk-low" />
+                <p className="font-label text-[10px] font-bold uppercase tracking-wider text-risk-low">
                   Качество снимка подходит для анализа
                 </p>
               </div>
@@ -343,30 +335,32 @@ export default function AddWizard({
               className="hidden"
               onChange={(e) => acceptFile(e.target.files?.[0])}
             />
-            <button
-              type="button"
-              onClick={() => cameraInput.current?.click()}
-              className="w-full py-4 rounded-2xl bg-dark text-sm font-bold text-[#F0EDE8] tracking-wide mb-2.5 hover:opacity-90 transition"
-            >
-              Сделать фото
-            </button>
-            <button
-              type="button"
-              onClick={() => galleryInput.current?.click()}
-              className="w-full py-4 rounded-2xl bg-white border border-line text-sm font-bold text-dark tracking-wide hover:bg-line/40 transition"
-            >
-              Выбрать из галереи
-            </button>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => cameraInput.current?.click()}
+                className="hard-sm hard-hover hard-press py-3.5 bg-ink text-paper font-label text-[11px] font-bold uppercase tracking-wider"
+              >
+                Сделать фото
+              </button>
+              <button
+                type="button"
+                onClick={() => galleryInput.current?.click()}
+                className="hard-sm hard-hover hard-press py-3.5 bg-white font-label text-[11px] font-bold uppercase tracking-wider"
+              >
+                Из галереи
+              </button>
+            </div>
           </div>
-          <div className="fixed bottom-0 left-0 right-0 bg-bg border-t border-line">
-            <div className="max-w-2xl mx-auto px-6 py-4">
+          <div className="fixed bottom-0 left-0 right-0 bg-paper border-t-2 border-ink">
+            <div className="max-w-2xl mx-auto px-5 py-4">
               <button
                 type="button"
                 onClick={() => setStep(3)}
                 disabled={!imageUrl || !qualityOk}
-                className="w-full py-4 rounded-[18px] bg-dark text-sm font-bold text-[#F0EDE8] tracking-wide disabled:opacity-35 hover:opacity-90 transition"
+                className="hard-sm hard-hover hard-press w-full py-3.5 bg-accent text-white font-label text-[12px] font-bold uppercase tracking-wider disabled:opacity-30 disabled:pointer-events-none"
               >
-                Продолжить
+                Продолжить →
               </button>
             </div>
           </div>
@@ -375,21 +369,21 @@ export default function AddWizard({
 
       {/* ── Шаг 3: анализ ── */}
       {step === 3 && (
-        <div className="flex-1 flex flex-col items-center justify-center px-6 min-h-[60vh]">
-          <span className="relative mb-7 flex items-center justify-center">
-            <span className="gold-halo absolute inset-[-34px] rounded-full" />
-            <span className="relative w-[120px] h-[120px] rounded-full bg-line shadow-[0_4px_20px_rgba(139,115,85,0.2)] animate-orb" />
+        <div className="grid-paper flex-1 flex flex-col items-center justify-center px-5 min-h-[60vh]">
+          <span className="w-24 h-24 bg-ink flex items-center justify-center mb-7 animate-square">
+            <span className="w-9 h-9 rounded-full bg-paper" />
           </span>
-          <p className="font-display text-2xl font-bold tracking-tight text-dark mb-2">Анализируем…</p>
-          <p className="text-xs text-faint">Оцениваем признаки по шкале ABCDE</p>
-          <span className="w-[72%] max-w-xs h-[3px] bg-line rounded-full mt-8 overflow-hidden">
-            <span className="block h-full bg-stone rounded-full animate-progress" />
-          </span>
-          <span className="flex items-center gap-2 mt-7 px-3.5 py-2 rounded-full border border-line bg-[#FBFAF7]">
-            <span className="w-[7px] h-[7px] rounded-full bg-stone" />
-            <span className="text-[11px] font-semibold text-stone tracking-wide">
-              Демо-режим анализа
-            </span>
+          <p className="font-display text-2xl font-extrabold uppercase tracking-tight mb-2">
+            Анализируем<span className="animate-blink">_</span>
+          </p>
+          <p className="font-label text-[10px] uppercase tracking-[0.2em] text-grey">
+            Оцениваем признаки по шкале ABCDE
+          </p>
+          <div className="w-[72%] max-w-xs h-3 border-2 border-ink mt-8 overflow-hidden bg-white">
+            <div className="stripes h-full" />
+          </div>
+          <span className="border-2 border-ink bg-white mt-7 px-3.5 py-1.5 font-label text-[10px] font-bold uppercase tracking-wider">
+            Демо-режим анализа
           </span>
         </div>
       )}

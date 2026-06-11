@@ -1,14 +1,14 @@
 import { RISK_LEVELS, type RiskLevel } from '@/lib/riskLevels';
 
-/** Цветной чип уровня риска — аналог components/RiskBadge.tsx из мобильного приложения. */
+/** Чип уровня риска — жёсткий прямоугольник с цветной рамкой. */
 export default function RiskBadge({ risk }: { risk: RiskLevel }) {
   const cfg = RISK_LEVELS[risk];
   return (
     <span
-      className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-bold whitespace-nowrap"
-      style={{ color: cfg.color, backgroundColor: cfg.colorBg, borderColor: cfg.colorBorder }}
+      className="inline-flex items-center gap-1.5 border-2 px-2 py-1 font-label text-[10px] font-bold uppercase tracking-wider whitespace-nowrap"
+      style={{ color: cfg.color, borderColor: cfg.color }}
     >
-      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: cfg.color }} />
+      <span className="w-1.5 h-1.5" style={{ backgroundColor: cfg.color }} />
       {cfg.short}
     </span>
   );

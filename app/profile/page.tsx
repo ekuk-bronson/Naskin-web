@@ -18,7 +18,7 @@ export default async function ProfilePage() {
   const changed = moles.filter((m) => m.changed).length;
 
   const stats = [
-    { label: 'Всего', value: moles.length, color: '#1C1A18' },
+    { label: 'Всего', value: moles.length, color: 'var(--ink)' },
     { label: 'Высокий риск', value: high, color: RISK_LEVELS.high.color },
     { label: 'Умеренный', value: moderate, color: RISK_LEVELS.moderate.color },
     { label: 'В норме', value: low, color: RISK_LEVELS.low.color },
@@ -26,51 +26,53 @@ export default async function ProfilePage() {
 
   return (
     <Shell>
-      <div className="mb-5">
-        <p className="text-[9px] tracking-[0.22em] uppercase text-stone font-semibold mb-1">
+      <div className="mb-6">
+        <p className="font-label text-[9px] tracking-[0.25em] text-accent font-bold mb-1.5 uppercase">
           Аккаунт
         </p>
-        <h1 className="font-display text-[30px] font-bold tracking-tight text-dark">Профиль</h1>
+        <h1 className="font-display text-[26px] font-extrabold uppercase tracking-tight">Профиль</h1>
       </div>
 
       {/* Карточка пользователя */}
-      <div className="bg-white border border-line rounded-3xl p-5 flex items-center gap-4 shadow-[0_3px_12px_rgba(28,26,24,0.04)] mb-4">
+      <div className="hard bg-white p-5 flex items-center gap-4 mb-5">
         {dbUser?.avatarUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={dbUser.avatarUrl}
             alt=""
-            className="w-16 h-16 rounded-full object-cover bg-line shrink-0"
+            className="w-14 h-14 object-cover border-2 border-ink shrink-0"
           />
         ) : (
-          <span className="w-16 h-16 rounded-full bg-line border border-faint/40 flex items-center justify-center text-xl font-extrabold text-stone shrink-0">
+          <span className="w-14 h-14 bg-ink text-paper flex items-center justify-center font-display text-xl font-extrabold shrink-0">
             {(dbUser?.name ?? '?').slice(0, 1).toUpperCase()}
           </span>
         )}
         <div className="min-w-0">
-          <p className="text-[16px] font-extrabold tracking-tight text-dark truncate">
+          <p className="text-[15px] font-bold uppercase tracking-tight truncate">
             {dbUser?.name ?? 'Пользователь'}
           </p>
-          <p className="text-xs text-dim truncate">{dbUser?.email}</p>
+          <p className="font-label text-[10px] uppercase tracking-wider text-grey truncate">
+            {dbUser?.email}
+          </p>
           {userId === 'demo-user' && (
-            <span className="inline-block mt-1.5 rounded-full border border-line bg-[#FBFAF7] px-2.5 py-0.5 text-[10px] font-semibold text-stone">
+            <span className="inline-block mt-1.5 border-2 border-accent px-2 py-0.5 font-label text-[9px] font-bold uppercase tracking-wider text-accent">
               Демо-режим
             </span>
           )}
         </div>
       </div>
 
-      {/* Статистика */}
-      <div className="grid grid-cols-2 gap-2.5 mb-4">
-        {stats.map((st) => (
+      {/* Статистика — табличная сетка */}
+      <div className="grid grid-cols-2 border-2 border-ink bg-white mb-5">
+        {stats.map((st, i) => (
           <div
             key={st.label}
-            className="bg-white border border-line rounded-2xl p-4 shadow-[0_2px_8px_rgba(28,26,24,0.03)]"
+            className={`p-4 ${i % 2 === 0 ? 'border-r-2 border-ink' : ''} ${i < 2 ? 'border-b-2 border-ink' : ''}`}
           >
-            <p className="font-display text-[30px] font-bold tracking-tight leading-9" style={{ color: st.color }}>
+            <p className="font-display text-[30px] font-extrabold leading-9" style={{ color: st.color }}>
               {st.value}
             </p>
-            <p className="text-[10px] tracking-[0.14em] uppercase text-faint font-semibold mt-1">
+            <p className="font-label text-[9px] tracking-[0.18em] uppercase text-grey font-bold mt-1">
               {st.label}
             </p>
           </div>
@@ -79,30 +81,24 @@ export default async function ProfilePage() {
 
       {/* Распределение риска */}
       {moles.length > 0 && (
-        <div className="bg-white border border-line rounded-2xl p-4 mb-4 shadow-[0_2px_8px_rgba(28,26,24,0.03)]">
-          <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-faint mb-3">
+        <div className="hard-sm bg-white p-4 mb-5">
+          <p className="font-label text-[9px] font-bold tracking-[0.22em] uppercase text-grey mb-3">
             Распределение риска
           </p>
-          <div className="flex h-2.5 rounded-full overflow-hidden bg-line">
+          <div className="flex h-4 border-2 border-ink overflow-hidden">
             {high > 0 && (
-              <span
-                style={{ width: `${(high / moles.length) * 100}%`, backgroundColor: RISK_LEVELS.high.color }}
-              />
+              <span style={{ width: `${(high / moles.length) * 100}%`, backgroundColor: RISK_LEVELS.high.color }} />
             )}
             {moderate > 0 && (
-              <span
-                style={{ width: `${(moderate / moles.length) * 100}%`, backgroundColor: RISK_LEVELS.moderate.color }}
-              />
+              <span style={{ width: `${(moderate / moles.length) * 100}%`, backgroundColor: RISK_LEVELS.moderate.color }} />
             )}
             {low > 0 && (
-              <span
-                style={{ width: `${(low / moles.length) * 100}%`, backgroundColor: RISK_LEVELS.low.color }}
-              />
+              <span style={{ width: `${(low / moles.length) * 100}%`, backgroundColor: RISK_LEVELS.low.color }} />
             )}
           </div>
           {changed > 0 && (
-            <p className="text-[11px] text-[#E06000] font-semibold mt-3">
-              ⚠ Изменились с последней проверки: {changed}
+            <p className="font-label text-[10px] font-bold uppercase tracking-wider text-risk-moderate mt-3">
+              ! Изменились с последней проверки: {changed}
             </p>
           )}
         </div>
@@ -117,14 +113,17 @@ export default async function ProfilePage() {
       >
         <button
           type="submit"
-          className="w-full py-4 rounded-2xl bg-white border border-[#F0D8DC] text-sm font-bold text-[#E8003D] tracking-wide hover:bg-[#FFF0F3] transition"
+          className="hard-sm hard-hover hard-press w-full py-3.5 bg-white font-label text-[12px] font-bold uppercase tracking-wider text-risk-high"
+          style={{ borderColor: 'var(--risk-high)', boxShadow: '3px 3px 0 var(--risk-high)' }}
         >
           Выйти из аккаунта
         </button>
       </form>
 
-      <p className="text-[11px] text-faint text-center mt-6 leading-relaxed pb-6">
-        Это не диагноз. FreeSkin не является медицинским устройством. Обратитесь к врачу.
+      <p className="font-label text-[9px] uppercase tracking-wider text-grey text-center mt-7 leading-relaxed pb-6">
+        Это не диагноз. FreeSkin не является медицинским устройством.
+        <br />
+        Обратитесь к врачу.
       </p>
     </Shell>
   );
