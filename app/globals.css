@@ -12,6 +12,11 @@
   --risk-high: #E8003D;
   --risk-moderate: #E06000;
   --risk-low: #00904A;
+
+  /* «Дорогие» производные STONE — шампанское золото для акцентов */
+  --gold: #B89A6E;
+  --gold-light: #D8C29A;
+  --gold-deep: #74583C;
 }
 
 @theme inline {
@@ -50,12 +55,101 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.11 0 0 0 0 0.10 0 0 0 0 0.09 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Градиентный акцентный текст в пределах палитры */
+/* Градиентный акцентный текст с медленным шиммером — «жидкое золото» */
 .text-gradient-stone {
-  background: linear-gradient(105deg, var(--dark) 20%, var(--stone) 55%, #B89A6E 75%, var(--dark) 100%);
+  background: linear-gradient(
+    105deg,
+    var(--dark) 12%,
+    var(--gold-deep) 32%,
+    var(--gold) 46%,
+    var(--gold-light) 52%,
+    var(--gold) 58%,
+    var(--gold-deep) 72%,
+    var(--dark) 92%
+  );
+  background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  animation: gold-shimmer 7s ease-in-out infinite;
+}
+
+@keyframes gold-shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Светло-золотой градиент для тёмных секций */
+.text-gradient-gold {
+  background: linear-gradient(
+    105deg,
+    var(--gold-deep) 8%,
+    var(--gold) 36%,
+    var(--gold-light) 50%,
+    var(--gold) 64%,
+    var(--gold-deep) 92%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gold-shimmer 7s ease-in-out infinite;
+}
+
+/* Кнопка с пробегающим бликом */
+.btn-sheen {
+  position: relative;
+  overflow: hidden;
+}
+.btn-sheen::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(248, 246, 243, 0.22), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.7s ease;
+}
+.btn-sheen:hover::after {
+  left: 130%;
+}
+
+/* Тонкая золотая окантовка для премиальных карточек */
+.gold-edge {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--bg-card, #fff), var(--bg-card, #fff)) padding-box,
+    linear-gradient(135deg, var(--gold-light) 0%, var(--border) 35%, var(--border) 65%, var(--gold) 100%) border-box;
+}
+
+/* Вращающееся conic-кольцо — золотая аура за мокапом/орбом */
+.gold-halo {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(184, 154, 110, 0.5) 60deg,
+    transparent 140deg,
+    rgba(216, 194, 154, 0.35) 230deg,
+    transparent 320deg
+  );
+  filter: blur(22px);
+  animation: ring-spin 12s linear infinite;
+}
+
+/* Scroll-reveal: элементы плавно появляются при входе в вьюпорт */
+.reveal {
+  opacity: 0;
+  transform: translateY(34px);
+  transition: opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
 }
 
 /* Стеклянная поверхность */
@@ -112,6 +206,37 @@ body {
   to { transform: translateX(-50%); }
 }
 .animate-marquee { animation: marquee 28s linear infinite; }
+.animate-marquee:hover { animation-play-state: paused; }
+
+/* Медленный дрейф фоновых свечений */
+@keyframes glow-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(34px, -22px) scale(1.07); }
+  66% { transform: translate(-26px, 18px) scale(0.96); }
+}
+.animate-drift { animation: glow-drift 16s ease-in-out infinite; }
+.animate-drift-slow { animation: glow-drift 24s ease-in-out infinite reverse; }
+
+/* Расходящийся импульс вокруг точки-индикатора */
+@keyframes ping-soft {
+  0% { transform: scale(1); opacity: 0.7; }
+  80%, 100% { transform: scale(2.6); opacity: 0; }
+}
+.animate-ping-soft { animation: ping-soft 1.8s cubic-bezier(0, 0, 0.2, 1) infinite; }
+
+/* Каскадное появление элементов списка */
+.stagger-in > * {
+  animation: fade-up 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.stagger-in > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-in > *:nth-child(2) { animation-delay: 0.12s; }
+.stagger-in > *:nth-child(3) { animation-delay: 0.19s; }
+.stagger-in > *:nth-child(4) { animation-delay: 0.26s; }
+.stagger-in > *:nth-child(5) { animation-delay: 0.33s; }
+.stagger-in > *:nth-child(6) { animation-delay: 0.4s; }
+.stagger-in > *:nth-child(7) { animation-delay: 0.47s; }
+.stagger-in > *:nth-child(8) { animation-delay: 0.54s; }
+.stagger-in > *:nth-child(n + 9) { animation-delay: 0.6s; }
 
 /* Карточки: мягкий подъём при наведении */
 .card-lift {

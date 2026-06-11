@@ -18,16 +18,16 @@ export default function HeroCard({ moles }: { moles: MoleDto[] }) {
 
   return (
     <section className="relative overflow-hidden rounded-[28px] bg-dark p-6 mb-3 shadow-[0_24px_60px_rgba(28,26,24,0.22)]">
-      {/* Тёплые свечения */}
-      <div className="absolute -top-10 -right-8 w-[170px] h-[170px] rounded-full bg-[rgba(160,120,58,0.2)] pointer-events-none" />
-      <div className="absolute -bottom-8 -left-8 w-[110px] h-[110px] rounded-full bg-[rgba(45,80,200,0.1)] pointer-events-none" />
+      {/* Тёплые дрейфующие свечения */}
+      <div className="animate-drift absolute -top-10 -right-8 w-[170px] h-[170px] rounded-full bg-[rgba(184,154,110,0.24)] blur-sm pointer-events-none" />
+      <div className="animate-drift-slow absolute -bottom-8 -left-8 w-[110px] h-[110px] rounded-full bg-[rgba(116,88,60,0.22)] blur-sm pointer-events-none" />
 
       <div className="relative flex justify-between items-start mb-5">
         <div>
           <p className="text-[9px] tracking-[0.2em] uppercase text-[#5A5248] font-semibold mb-2">
             Всего под наблюдением
           </p>
-          <p className="font-display text-[58px] leading-none font-bold text-[#F0EDE8] tracking-tight mb-2">
+          <p className="font-display text-[58px] leading-none font-bold text-gradient-gold tracking-tight mb-2">
             {moles.length}
           </p>
           <p className="text-[11px] text-[#524B43]">
@@ -36,7 +36,8 @@ export default function HeroCard({ moles }: { moles: MoleDto[] }) {
               : 'Добавьте первую родинку'}
           </p>
         </div>
-        <div className="w-[68px] h-[68px] rounded-full border-[1.5px] border-stone/50 bg-stone/10 flex flex-col items-center justify-center mt-1 shrink-0">
+        <div className="relative w-[68px] h-[68px] rounded-full border-[1.5px] border-stone/50 bg-stone/10 flex flex-col items-center justify-center mt-1 shrink-0">
+          <span className="absolute inset-[-5px] rounded-full border border-dashed border-stone/30 animate-ring" />
           <span className="text-[20px] font-extrabold text-stone tracking-tight leading-none">
             {normPct}%
           </span>

@@ -99,7 +99,7 @@ export default function DashboardClient({ moles: initial }: { moles: MoleDto[] }
           </p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="stagger-in space-y-2">
           {sorted.map((m) => (
             <MoleCard key={m.id} mole={m} onDelete={handleDelete} />
           ))}
@@ -111,7 +111,7 @@ export default function DashboardClient({ moles: initial }: { moles: MoleDto[] }
         <div className="max-w-2xl mx-auto px-5 py-3">
           <Link
             href="/moles/new"
-            className="block w-full py-4 rounded-[18px] bg-dark text-center text-sm font-bold text-[#F0EDE8] tracking-wide shadow-lg shadow-dark/20 hover:opacity-90 transition"
+            className="btn-sheen block w-full py-4 rounded-[18px] bg-dark text-center text-sm font-bold text-[#F0EDE8] tracking-wide shadow-lg shadow-dark/20 hover:-translate-y-px transition"
           >
             + Добавить родинку
           </Link>

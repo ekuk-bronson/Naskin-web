@@ -376,7 +376,10 @@ export default function AddWizard({
       {/* ── Шаг 3: анализ ── */}
       {step === 3 && (
         <div className="flex-1 flex flex-col items-center justify-center px-6 min-h-[60vh]">
-          <span className="w-[120px] h-[120px] rounded-full bg-line shadow-[0_4px_20px_rgba(139,115,85,0.15)] mb-7 animate-orb" />
+          <span className="relative mb-7 flex items-center justify-center">
+            <span className="gold-halo absolute inset-[-34px] rounded-full" />
+            <span className="relative w-[120px] h-[120px] rounded-full bg-line shadow-[0_4px_20px_rgba(139,115,85,0.2)] animate-orb" />
+          </span>
           <p className="font-display text-2xl font-bold tracking-tight text-dark mb-2">Анализируем…</p>
           <p className="text-xs text-faint">Оцениваем признаки по шкале ABCDE</p>
           <span className="w-[72%] max-w-xs h-[3px] bg-line rounded-full mt-8 overflow-hidden">
