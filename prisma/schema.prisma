@@ -1,14 +1,15 @@
 // FreeSkin web — Prisma schema.
-// Dev uses SQLite (zero setup, mirrors the mobile app). To switch to
-// PostgreSQL/Supabase change provider to "postgresql" and set DATABASE_URL.
+// PostgreSQL (Neon on Vercel). DATABASE_URL is the pooled connection used
+// at runtime; DIRECT_URL is the direct connection used for migrations.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Mole {

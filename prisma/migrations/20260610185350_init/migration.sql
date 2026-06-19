@@ -1,10 +1,13 @@
+-- CreateSchema
+CREATE SCHEMA IF NOT EXISTS "public";
+
 -- CreateTable
 CREATE TABLE "Mole" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "userId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "loc" TEXT NOT NULL,
-    "score" REAL NOT NULL,
+    "score" DOUBLE PRECISION NOT NULL,
     "risk" TEXT NOT NULL,
     "days" INTEGER NOT NULL DEFAULT 0,
     "changed" BOOLEAN NOT NULL DEFAULT false,
@@ -15,18 +18,25 @@ CREATE TABLE "Mole" (
     "historyJson" TEXT NOT NULL,
     "summary" TEXT,
     "rec" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Mole_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Mole_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "User" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "avatarUrl" TEXT
+    "avatarUrl" TEXT,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
 CREATE INDEX "Mole_userId_idx" ON "Mole"("userId");
+
+-- AddForeignKey
+ALTER TABLE "Mole" ADD CONSTRAINT "Mole_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
